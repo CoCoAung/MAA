@@ -174,25 +174,31 @@
     <header class="bg-black text-white relative" id="home">
 
         <!-- Transparent Navbar -->
-        <nav class="bg-transparent text-white p-4 fixed w-full top-0 z-50">
-            <div class="container mx-auto flex justify-between items-center">
-                <a href="#home" class="text-xl font-bold">MAA</a>
+       <!-- Transparent Navbar -->
+<nav class="bg-transparent text-white p-4 fixed w-full top-0 z-50">
+    <div class="container mx-auto flex justify-between items-center">
+        <a href="#home" class="text-xl font-bold">MAA</a>
 
-                <!-- Mobile Menu Toggle -->
-                <div class="lg:hidden">
-                    <button onclick="toggleMenu()" class="text-white focus:outline-none">
-                        <i class="fas fa-bars"></i>
-                    </button>
-                </div>
+        <!-- Mobile Menu Toggle -->
+        <div class="lg:hidden">
+            <button onclick="toggleMenu()" class="text-white focus:outline-none">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
 
-                <!-- Desktop Menu -->
-                <div class="hidden lg:flex space-x-4">
-                    <a href="#home">Home</a>
-                    <a href="#about">About Us</a>
-                    <a href="#missions">Missions</a>
-                </div>
-            </div>
-        </nav>
+        <!-- Responsive Menu -->
+        <div class="hidden lg:flex space-x-4">
+            <a href="#home">Home</a>
+            <a href="#about">About Us</a>
+            <a href="#missions">Missions</a>
+        </div>
+
+        <!-- Mobile Menu (Hidden by default on larger screens) -->
+        <div class="lg:hidden">
+            <!-- Mobile Menu Content Goes Here -->
+        </div>
+    </div>
+</nav>
 
         <!-- Main Content of Header -->
         <div class="container mx-auto text-center mt-16 px-4">
