@@ -1,296 +1,119 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Myanmar Space Exploration</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap">
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <title>Solar System Mission</title>
     <style>
         body {
-            font-family: 'Roboto', sans-serif;
+            font-family: Arial, sans-serif;
             margin: 0;
+            padding: 0;
+            background-color: #1c1c1c;
+            color: #fff;
         }
-
-        header {
-            background: url('https://res.cloudinary.com/momentum-media-group-pty-ltd/image/upload/v1686795211/Space%20Connect/space-exploration-sc_fm1ysf.jpg') center/cover no-repeat;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            color: white;
-        }
-
-        header h2 {
-            font-size: 2.5rem;
-            font-weight: bold;
-            margin-bottom: 1rem;
-        }
-
-        header p {
-            font-size: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        header a.btn {
-            padding: 1rem 2rem;
-            font-size: 1.2rem;
-        }
-
-        /* Updated styles for About and Missions sections */
-        #about,
         #missions {
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            color: white;
-            position: relative;
-            overflow: hidden;
+            padding: 50px 20px;
+            background-image: url('https://assets.bwbx.io/images/users/iqjWHBFdfxIU/iEAdObTD4Z94/v0/-1x-1.jpg');
+            background-size: cover;
+            background-position: center;
             text-align: center;
         }
-
-        #missons {
-            height: 80vh;
+        h2 {
+            font-size: 2rem;
+            margin-bottom: 20px;
         }
-
-        #footer {
-            height: 20vh;
+        #search-section {
+            margin-top: 30px;
         }
-
-        #about::before,
-        #missions::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            /* Adjust the overlay color and transparency */
+        input, button {
+            padding: 10px;
+            margin: 5px;
+            font-size: 1rem;
         }
-
-        #about h2,
-        #missions h2 {
-            font-size: 3rem;
-            font-weight: bold;
-            margin-bottom: 1rem;
-            z-index: 1;
-            /* Ensure text is above the overlay */
+        #results {
+            margin-top: 20px;
+            text-align: left;
+            max-width: 600px;
+            margin: 20px auto;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 20px;
+            border-radius: 10px;
         }
-
-        #about p,
-        #missions p {
-            font-size: 1.5rem;
-            margin-bottom: 2rem;
-            z-index: 1;
-            /* Ensure text is above the overlay */
-        }
-
-        header {
-            background: url('https://res.cloudinary.com/momentum-media-group-pty-ltd/image/upload/v1686795211/Space%20Connect/space-exploration-sc_fm1ysf.jpg') center/cover no-repeat;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            color: white;
-        }
-
-        header h2 {
-            font-size: 2.5rem;
-            font-weight: bold;
-            margin-bottom: 1rem;
-        }
-
-        header p {
-            font-size: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        header a.btn {
-            padding: 1rem 2rem;
-            font-size: 1.2rem;
-        }
-
-        /* Updated styles for responsive dark menu */
-        nav {
-            background: black;
-            padding: 1rem;
-        }
-
-        .menu-toggle {
-            display: none;
-            cursor: pointer;
-            font-size: 1.5rem;
-            color: white;
-        }
-
-        nav ul {
-            list-style: none;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        nav a {
-            color: white;
-            text-decoration: none;
-            padding: 0.5rem 1rem;
-            transition: color 0.3s ease;
-        }
-
-        nav a:hover {
-            color: #3498db;
-        }
-
-        @media (max-width: 768px) {
-            nav ul {
-                display: none;
-                flex-direction: column;
-                width: 100%;
-                text-align: center;
-            }
-
-            nav ul.show {
-                display: flex;
-            }
-
-            .menu-toggle {
-                display: block;
-            }
+        .body-info {
+            margin-bottom: 10px;
+            padding: 10px;
+            border-bottom: 1px solid #444;
         }
     </style>
 </head>
+<body>
 
-<body class="font-sans">
-    <header class="bg-black text-white relative" id="home">
+<section id="missions">
+    <h2>Solar System Mission</h2>
+    <p>Explore celestial bodies in our solar system. Enter a name below to learn more!</p>
+    <div id="search-section">
+        <input type="text" id="body-name" placeholder="Enter celestial body name">
+        <button onclick="fetchBodyDetails()">Search</button>
+    </div>
+    <div id="results"></div>
+</section>
 
-        <!-- Transparent Navbar -->
-        <nav class="bg-transparent text-white p-4 fixed w-full top-0 z-50">
-            <div class="container mx-auto flex justify-between items-center">
-                <a href="#home" class="text-xl font-bold">MAA</a>
+<script>
+    const API_BASE_URL = 'https://api.le-systeme-solaire.net/rest/bodies';
 
-                <!-- Mobile Menu Toggle -->
-                <div class="lg:hidden">
-                    <button onclick="toggleMenu()" class="text-white focus:outline-none">
-                        <i class="fas fa-bars"></i>
-                    </button>
-                </div>
-
-                <!-- Desktop Menu -->
-                <div class="hidden lg:flex space-x-4">
-                    <a href="#home">Home</a>
-                    <a href="#about">About Us</a>
-                    <a href="#missions">Missions</a>
-                </div>
-            </div>
-        </nav>
-
-        <!-- Main Content of Header -->
-        <div class="container mx-auto text-center mt-16 px-4">
-            <h2 class="text-3xl font-bold mb-2">Exploring the Universe, Advancing Myanmar's Space Frontier</h2>
-            <p class="text-sm mb-4">Join us on an incredible journey beyond the stars.</p>
-            <br>
-            <a href="#missions" class="btn bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded">Explore Our
-                Missions</a>
-        </div>
-
-    </header>
-
-    <!-- Responsive Navigation Menu -->
-
-
-    <!-- About Section -->
-    <section id="about" class="bg-cover bg-center text-white relative"
-        style="background-image: url('https://cdn.mos.cms.futurecdn.net/qTmvroik2NtHVGsfCHyyxF.jpg');">
-        <div class="container mx-auto z-10">
-            <h2>About Us</h2>
-            <p>Myanmar Space Exploration is at the forefront of technological innovation, dedicated to pushing the
-                boundaries of space exploration. Our mission is to inspire, educate, and pave the way for future
-                generations to reach for the stars.</p>
-            <p>With cutting-edge technology and a team of passionate individuals, we aim to contribute to humanity's
-                understanding of the cosmos. Join us in this exciting journey as we explore new frontiers and make
-                history in the realm of space.</p>
-        </div>
-    </section>
-
-
-    <!-- Missions Section -->
-        <section id="missions" class="bg-cover bg-center text-white relative"
-            style="background-image: url('https://assets.bwbx.io/images/users/iqjWHBFdfxIU/iEAdObTD4Z94/v0/-1x-1.jpg');"
-            onclick="toggleFooter()">
-            <div class="container mx-auto z-10 text-center">
-                <h2 class="text-3xl font-bold mb-4">Our Missions</h2>
-                <p class="mb-4">At Myanmar Space Exploration, we embark on a variety of missions with the goal of
-                    advancing
-                    our understanding of the universe. Our missions range from satellite launches and space probes to
-                    collaborative projects with international space agencies.</p>
-                <p class="mb-8">One of our flagship missions includes the establishment of a lunar research station to
-                    conduct experiments and gather valuable data about the Moon. We are committed to pushing the
-                    boundaries of space exploration for the benefit of all mankind.</p>
-            </div>
-            
-        </section>
-        <!-- Footer Section -->
-        <footer class="bg-gray-800 text-white py-4 hidden-footer">
-            <div class="container mx-auto text-center">
-                <p>Follow us:
-                    <a href="#" class="text-white mx-2"><i class="fab fa-facebook"></i></a>
-                    <a href="#" class="text-white mx-2"><i class="fab fa-twitter"></i></a>
-                    <a href="#" class="text-white mx-2"><i class="fab fa-instagram"></i></a>
-                </p>
-                <p>&copy; 2024 Myanmar Space Exploration. All rights reserved.</p>
-            </div>
-        </footer>   
-
-
-    <!-- JavaScript to toggle the class -->
-    <script>
-        function toggleFooter() {
-            document.body.classList.toggle('hidden-footer');
+    // Fetch details of a celestial body by name
+    async function fetchBodyDetails() {
+        const bodyName = document.getElementById('body-name').value.trim().toLowerCase();
+        if (!bodyName) {
+            displayResult('Please enter a valid name.');
+            return;
         }
-    </script>
 
+        try {
+            const response = await fetch(API_BASE_URL);
+            if (!response.ok) {
+                throw new Error('Failed to fetch data from the API');
+            }
 
+            const data = await response.json();
+            const bodies = data.bodies;
+            const matchedBody = bodies.find(body => 
+                body.name.toLowerCase() === bodyName || 
+                (body.englishName && body.englishName.toLowerCase() === bodyName)
+            );
 
-
-    <!-- Smooth scrolling script -->
-    <script>
-        $(document).ready(function () {
-            $("a").on('click', function (event) {
-                if (this.hash !== "") {
-                    event.preventDefault();
-                    var hash = this.hash;
-                    $('html, body').animate({
-                        scrollTop: $(hash).offset().top
-                    }, 800, function () {
-                        window.location.hash = hash;
-                    });
-                }
-            });
-        });
-
-        // Simulate form submission
-        function submitForm() {
-            alert('Form submitted! (Simulation)');
-            // You can add AJAX code here to handle actual form submission
+            if (matchedBody) {
+                displayBodyDetails(matchedBody);
+            } else {
+                displayResult('No matching body found. Please try another name.');
+            }
+        } catch (error) {
+            console.error(error);
+            displayResult('An error occurred while fetching data. Please try again later.');
         }
-    </script>
-    <script src="https://kit.fontawesome.com/your-fontawesome-kit.js" crossorigin="anonymous"></script>
-    <script>
-        function toggleMenu() {
-            // Add your logic to toggle the menu here
-            console.log("Menu toggled");
-        }
-    </script>
+    }
+
+    // Display celestial body details
+    function displayBodyDetails(body) {
+        const resultDiv = document.getElementById('results');
+        resultDiv.innerHTML = `
+            <div class="body-info">
+                <h3>${body.englishName || body.name}</h3>
+                <p><strong>ID:</strong> ${body.id}</p>
+                <p><strong>Name:</strong> ${body.name}</p>
+                <p><strong>Is Planet:</strong> ${body.isPlanet ? 'Yes' : 'No'}</p>
+                <p><strong>Semimajor Axis:</strong> ${body.semimajorAxis || 'N/A'} km</p>
+            </div>
+        `;
+    }
+
+    // Display a message in the results section
+    function displayResult(message) {
+        const resultDiv = document.getElementById('results');
+        resultDiv.innerHTML = `<p>${message}</p>`;
+    }
+</script>
 
 </body>
 </html>
