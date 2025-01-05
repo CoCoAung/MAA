@@ -171,34 +171,20 @@
 </head>
 
 <body class="font-sans">
-    <!-- Include Alpine.js -->
     <header class="bg-black text-white relative" id="home">
 
         <!-- Transparent Navbar -->
         <nav class="bg-transparent text-white p-4 fixed w-full top-0 z-50">
             <div class="container mx-auto flex justify-between items-center">
                 <a href="#home" class="text-xl font-bold">MAA</a>
-    
-                <!-- Mobile Menu Toggle using jQuery -->
+
+                <!-- Mobile Menu Toggle -->
                 <div class="lg:hidden">
-                    <button id="mobile-menu-button" class="text-white focus:outline-none">
+                    <button onclick="toggleMenu()" class="text-white focus:outline-none">
                         <i class="fas fa-bars"></i>
                     </button>
                 </div>
-    
-                <!-- Mobile Menu (Hidden by default) -->
-                <div id="mobile-menu" class="lg:hidden fixed top-0 left-0 w-full h-full bg-black bg-opacity-75 items-center justify-center hidden">
-                    <div class="flex flex-col items-center">
-                        <!-- Close button for mobile menu -->
-                        <button id="close-menu-button" class="text-white focus:outline-none absolute top-4 right-4">
-                            <i class="fas fa-times"></i>
-                        </button>
-                        <a href="#home" class="text-white py-2">Home</a>
-                        <a href="#about" class="text-white py-2">About Us</a>
-                        <a href="#missions" class="text-white py-2">Missions</a>
-                    </div>
-                </div>
-    
+
                 <!-- Desktop Menu -->
                 <div class="hidden lg:flex space-x-4">
                     <a href="#home">Home</a>
@@ -207,7 +193,7 @@
                 </div>
             </div>
         </nav>
-    
+
         <!-- Main Content of Header -->
         <div class="container mx-auto text-center mt-16 px-4">
             <h2 class="text-3xl font-bold mb-2">Exploring the Universe, Advancing Myanmar's Space Frontier</h2>
@@ -216,11 +202,8 @@
             <a href="#missions" class="btn bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded">Explore Our
                 Missions</a>
         </div>
-    
+
     </header>
-    
-    
-    
 
     <!-- Responsive Navigation Menu -->
 
@@ -246,10 +229,14 @@
             onclick="toggleFooter()">
             <div class="container mx-auto z-10 text-center">
                 <h2 class="text-3xl font-bold mb-4">Our Missions</h2>
+                
                 <p class="mb-4">At Myanmar Space Exploration, we embark on a variety of missions with the goal of
                     advancing
                     our understanding of the universe. Our missions range from satellite launches and space probes to
-                    collaborative projects with international space agencies.</p>
+                    collaborative projects with international space agencies.
+                </p>
+                <p><a href="Our first mission"></a> is searching planets</p>
+                
                 <p class="mb-8">One of our flagship missions includes the establishment of a lunar research station to
                     conduct experiments and gather valuable data about the Moon. We are committed to pushing the
                     boundaries of space exploration for the benefit of all mankind.</p>
@@ -267,6 +254,16 @@
                 <p>&copy; 2024 Myanmar Space Exploration. All rights reserved.</p>
             </div>
         </footer>   
+
+
+    <!-- JavaScript to toggle the class -->
+    <script>
+        function toggleFooter() {
+            document.body.classList.toggle('hidden-footer');
+        }
+    </script>
+
+
 
 
     <!-- Smooth scrolling script -->
@@ -292,19 +289,12 @@
         }
     </script>
     <script src="https://kit.fontawesome.com/your-fontawesome-kit.js" crossorigin="anonymous"></script>
-    
-    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script>
-        $(document).ready(function() {
-            $("#mobile-menu-button").click(function() {
-                $("#mobile-menu").toggle();
-            });
-    
-            // Close the mobile menu when the close button is clicked
-            $("#close-menu-button").click(function() {
-                $("#mobile-menu").hide();
-            });
-        });
+        function toggleMenu() {
+            // Add your logic to toggle the menu here
+            console.log("Menu toggled");
+        }
     </script>
+
 </body>
 </html>
