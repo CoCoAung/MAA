@@ -4,297 +4,275 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Myanmar Space Exploration</title>
+    <title>PROJECT: HORIZON | Independent Space Research</title>
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap">
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Inter:wght@300;400&display=swap">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Orbitron', 'sans-serif'],
+                        mono: ['Share Tech Mono', 'monospace'],
+                    },
+                    colors: {
+                        'neon-cyan': '#00f3ff',
+                        'neon-red': '#ff003c',
+                        'deep-space': '#050505',
+                        'panel-gray': '#121212',
+                    },
+                    backgroundImage: {
+                        'grid-pattern': "linear-gradient(to right, #1f2937 1px, transparent 1px), linear-gradient(to bottom, #1f2937 1px, transparent 1px)",
+                    }
+                }
+            }
+        }
+    </script>
+
     <style>
         body {
-            font-family: 'Roboto', sans-serif;
-            margin: 0;
+            background-color: #050505;
+            color: #e5e5e5;
+            overflow-x: hidden;
         }
 
-        header {
-            background: url('https://res.cloudinary.com/momentum-media-group-pty-ltd/image/upload/v1686795211/Space%20Connect/space-exploration-sc_fm1ysf.jpg') center/cover no-repeat;
+        /* Scanline effect for CRT monitor vibe */
+        .scanline {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
             height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            color: white;
+            background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0) 50%, rgba(0,0,0,0.2) 50%, rgba(0,0,0,0.2));
+            background-size: 100% 4px;
+            pointer-events: none;
+            z-index: 999;
+            opacity: 0.15;
         }
 
-        header h2 {
-            font-size: 2.5rem;
-            font-weight: bold;
-            margin-bottom: 1rem;
+        /* Glowing Text */
+        .glow-text {
+            text-shadow: 0 0 10px rgba(0, 243, 255, 0.7);
+        }
+        
+        .glow-red {
+            text-shadow: 0 0 10px rgba(255, 0, 60, 0.7);
         }
 
-        header p {
-            font-size: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        header a.btn {
-            padding: 1rem 2rem;
-            font-size: 1.2rem;
-        }
-
-        /* Updated styles for About and Missions sections */
-        #about,
-        #missions {
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            color: white;
+        /* Animated Border */
+        .cyber-border {
             position: relative;
-            overflow: hidden;
-            text-align: center;
+            border: 1px solid #333;
         }
-
-        #missons {
-            height: 80vh;
-        }
-
-        #footer {
-            height: 20vh;
-        }
-
-        #about::before,
-        #missions::before {
-            content: "";
+        .cyber-border::after {
+            content: '';
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            /* Adjust the overlay color and transparency */
+            border: 1px solid transparent;
+            border-top-color: #00f3ff;
+            border-bottom-color: #00f3ff;
+            transform: scaleX(0);
+            transition: transform 0.4s ease;
+        }
+        .cyber-border:hover::after {
+            transform: scaleX(1);
         }
 
-        #about h2,
-        #missions h2 {
-            font-size: 3rem;
-            font-weight: bold;
-            margin-bottom: 1rem;
-            z-index: 1;
-            /* Ensure text is above the overlay */
+        /* Typing cursor */
+        .cursor-blink {
+            animation: blink 1s step-end infinite;
         }
-
-        #about p,
-        #missions p {
-            font-size: 1.5rem;
-            margin-bottom: 2rem;
-            z-index: 1;
-            /* Ensure text is above the overlay */
-        }
-
-        header {
-            background: url('https://res.cloudinary.com/momentum-media-group-pty-ltd/image/upload/v1686795211/Space%20Connect/space-exploration-sc_fm1ysf.jpg') center/cover no-repeat;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            color: white;
-        }
-
-        header h2 {
-            font-size: 2.5rem;
-            font-weight: bold;
-            margin-bottom: 1rem;
-        }
-
-        header p {
-            font-size: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        header a.btn {
-            padding: 1rem 2rem;
-            font-size: 1.2rem;
-        }
-
-        /* Updated styles for responsive dark menu */
-        nav {
-            background: black;
-            padding: 1rem;
-        }
-
-        .menu-toggle {
-            display: none;
-            cursor: pointer;
-            font-size: 1.5rem;
-            color: white;
-        }
-
-        nav ul {
-            list-style: none;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        nav a {
-            color: white;
-            text-decoration: none;
-            padding: 0.5rem 1rem;
-            transition: color 0.3s ease;
-        }
-
-        nav a:hover {
-            color: #3498db;
-        }
-
-        @media (max-width: 768px) {
-            nav ul {
-                display: none;
-                flex-direction: column;
-                width: 100%;
-                text-align: center;
-            }
-
-            nav ul.show {
-                display: flex;
-            }
-
-            .menu-toggle {
-                display: block;
-            }
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
         }
     </style>
 </head>
 
-<body class="font-sans">
-    <header class="bg-black text-white relative" id="home">
+<body class="antialiased">
+    
+    <div class="scanline"></div>
 
-        <!-- Transparent Navbar -->
-        <nav class="bg-transparent text-white p-4 fixed w-full top-0 z-50">
-            <div class="container mx-auto flex justify-between items-center">
-                <a href="#home" class="text-xl font-bold">MAA</a>
+    <div class="fixed top-0 w-full z-50 bg-black/90 border-b border-gray-800 font-mono text-xs uppercase tracking-widest text-neon-cyan py-2 px-4 flex justify-between items-center backdrop-blur-sm">
+        <div class="flex items-center gap-4">
+            <span class="animate-pulse">● SYSTEM ONLINE</span>
+            <span>OP: SOLO_COMMAND</span>
+            <span class="hidden md:inline text-gray-500">LOC: CLASSIFIED</span>
+        </div>
+        <div class="flex items-center gap-4">
+            <span>CPU: <span id="cpu-stat">12</span>%</span>
+            <span>NET: SECURE</span>
+        </div>
+    </div>
 
-                <!-- Mobile Menu Toggle -->
-                <div class="lg:hidden">
-                    <button onclick="toggleMenu()" class="text-white focus:outline-none">
-                        <i class="fas fa-bars"></i>
-                    </button>
-                </div>
+    <section class="min-h-screen flex flex-col justify-center items-center relative bg-[url('https://images.unsplash.com/photo-1462331940025-496dfbfc7564?q=80&w=2111&auto=format&fit=crop')] bg-cover bg-center bg-no-repeat bg-fixed">
+        <div class="absolute inset-0 bg-black/70"></div> <div class="relative z-10 text-center px-4 max-w-5xl">
+            <h2 class="text-neon-cyan font-mono text-sm md:text-lg mb-4 tracking-[0.3em]">INDEPENDENT AEROSPACE INITIATIVE</h2>
+            <h1 class="text-6xl md:text-8xl font-display font-black text-white mb-6 uppercase tracking-tighter leading-none">
+                PROJECT <br> <span class="text-transparent bg-clip-text bg-gradient-to-r from-neon-cyan to-blue-600 glow-text">HORIZON</span>
+            </h1>
+            <p class="text-gray-300 font-mono text-lg md:text-xl max-w-2xl mx-auto mb-10 border-l-2 border-neon-red pl-4 text-left">
+                > One Engineer.<br>
+                > One Vision.<br>
+                > No Bureaucracy. Just Physics.
+            </p>
+            
+            <div class="flex flex-col md:flex-row gap-4 justify-center">
+                <a href="#projects" class="cyber-border bg-neon-cyan/10 text-neon-cyan px-8 py-4 font-display font-bold uppercase tracking-widest hover:bg-neon-cyan hover:text-black transition duration-300">
+                    Access Flight Logs
+                </a>
+                <a href="#manifesto" class="cyber-border bg-black border border-gray-700 text-gray-400 px-8 py-4 font-display font-bold uppercase tracking-widest hover:border-neon-red hover:text-neon-red transition duration-300">
+                    Read Manifesto
+                </a>
+            </div>
+        </div>
+        
+        <div class="absolute bottom-0 w-full h-32 bg-gradient-to-t from-deep-space to-transparent"></div>
+    </section>
 
-                <!-- Desktop Menu -->
-                <div class="hidden lg:flex space-x-4">
-                    <a href="#home">Home</a>
-                    <a href="#about">About Us</a>
-                    <a href="#missions">Missions</a>
+    <section id="manifesto" class="py-24 bg-deep-space relative">
+        <div class="container mx-auto px-6 grid md:grid-cols-2 gap-16 items-center">
+            <div>
+                <h2 class="text-4xl font-display font-bold text-white mb-8 border-l-4 border-neon-red pl-6">
+                    THE <span class="text-neon-red glow-red">SOLO</span> PARAMETER
+                </h2>
+                <div class="font-mono text-gray-400 space-y-6 leading-relaxed text-sm md:text-base text-justify">
+                    <p>
+                        <span class="text-neon-cyan">> INIT_STATEMENT:</span> 
+                        Space exploration is no longer the exclusive domain of superpowers and conglomerates. The tools of the trade—coding, simulation, 3D printing, and propulsion theory—are now in the hands of the individual.
+                    </p>
+                    <p>
+                        This is not a government agency. There is no board of directors. This is a private research initiative focused on orbital mechanics simulations, rocketry avionics, and theoretical mission planning.
+                    </p>
+                    <p>
+                        I am building the future from a single terminal. 
+                    </p>
+                    <div class="p-4 bg-gray-900 border border-gray-800 text-neon-cyan mt-6">
+                        "The best aerospace engineering is done when the only limit is your own imagination."
+                    </div>
                 </div>
             </div>
-        </nav>
-
-        <!-- Main Content of Header -->
-        <div class="container mx-auto text-center mt-16 px-4">
-            <h2 class="text-3xl font-bold mb-2">Exploring the Universe, Advancing Myanmar's Space Frontier</h2>
-            <p class="text-sm mb-4">Join us on an incredible journey beyond the stars.</p>
-            <br>
-            <a href="#missions" class="btn bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded">Explore Our
-                Missions</a>
-        </div>
-
-    </header>
-
-    <!-- Responsive Navigation Menu -->
-
-
-    <!-- About Section -->
-    <section id="about" class="bg-cover bg-center text-white relative"
-        style="background-image: url('https://cdn.mos.cms.futurecdn.net/qTmvroik2NtHVGsfCHyyxF.jpg');">
-        <div class="container mx-auto z-10">
-            <h2>About Us</h2>
-            <p>Myanmar Space Exploration is at the forefront of technological innovation, dedicated to pushing the
-                boundaries of space exploration. Our mission is to inspire, educate, and pave the way for future
-                generations to reach for the stars.</p>
-            <p>With cutting-edge technology and a team of passionate individuals, we aim to contribute to humanity's
-                understanding of the cosmos. Join us in this exciting journey as we explore new frontiers and make
-                history in the realm of space.</p>
+            
+            <div class="bg-gray-900 p-2 rounded border border-gray-700 shadow-2xl shadow-neon-cyan/10">
+                <div class="bg-black p-6 font-mono text-xs md:text-sm h-80 overflow-y-auto text-green-500 rounded-sm">
+                    <p class="mb-2">user@horizon-lab:~$ ./init_sequence.sh</p>
+                    <p class="mb-2 text-white">Loading modules...</p>
+                    <p class="mb-2">[OK] Orbital Dynamics ...... LOADED</p>
+                    <p class="mb-2">[OK] Telemetry Systems ..... LOADED</p>
+                    <p class="mb-2">[OK] Coffee Machine ........ LOADED</p>
+                    <p class="mb-2 text-yellow-500">WARNING: Budget Critical (Self-Funded)</p>
+                    <p class="mb-2 text-white">Compiling trajectory data...</p>
+                    <p class="mb-2">Processing...</p>
+                    <p class="mb-2 animate-pulse">_</p>
+                </div>
+            </div>
         </div>
     </section>
 
+    <section id="projects" class="py-24 bg-panel-gray bg-[size:40px_40px] bg-grid-pattern border-t border-gray-800">
+        <div class="container mx-auto px-6">
+            <h2 class="text-3xl font-display font-bold text-center mb-16 uppercase tracking-widest">
+                <i class="fas fa-code-branch text-neon-cyan mr-3"></i>Active Workstreams
+            </h2>
 
-    <!-- Missions Section -->
-        <section id="missions" class="bg-cover bg-center text-white relative"
-            style="background-image: url('https://assets.bwbx.io/images/users/iqjWHBFdfxIU/iEAdObTD4Z94/v0/-1x-1.jpg');"
-            onclick="toggleFooter()">
-            <div class="container mx-auto z-10 text-center">
-                <h2 class="text-3xl font-bold mb-4">Our Missions</h2>
+            <div class="grid md:grid-cols-3 gap-8">
                 
-                <p class="mb-4">At Myanmar Space Exploration, we embark on a variety of missions with the goal of
-                    advancing
-                    our understanding of the universe. Our missions range from satellite launches and space probes to
-                    collaborative projects with international space agencies.
-                </p>
-                <p><a href="Our first mission"></a> is searching planets</p>
-                
-                <p class="mb-8">One of our flagship missions includes the establishment of a lunar research station to
-                    conduct experiments and gather valuable data about the Moon. We are committed to pushing the
-                    boundaries of space exploration for the benefit of all mankind.</p>
+                <div class="group relative bg-black border border-gray-800 p-8 hover:border-neon-cyan transition duration-300">
+                    <div class="absolute top-0 right-0 bg-gray-800 text-xs font-mono px-2 py-1 text-gray-400">PHASE: ALPHA</div>
+                    <div class="text-neon-cyan text-4xl mb-6"><i class="fas fa-laptop-code"></i></div>
+                    <h3 class="text-2xl font-display font-bold text-white mb-4">Sim-Earth</h3>
+                    <p class="text-gray-400 font-mono text-sm mb-6">
+                        Developing a custom Python-based orbital decay simulator. Calculating atmospheric drag on Low Earth Orbit (LEO) objects.
+                    </p>
+                    <div class="w-full bg-gray-800 h-1 mt-4">
+                        <div class="bg-neon-cyan h-1 w-3/4 shadow-[0_0_10px_#00f3ff]"></div>
+                    </div>
+                    <span class="text-xs font-mono text-neon-cyan mt-2 block">75% COMPLETE</span>
+                </div>
+
+                <div class="group relative bg-black border border-gray-800 p-8 hover:border-neon-cyan transition duration-300">
+                    <div class="absolute top-0 right-0 bg-gray-800 text-xs font-mono px-2 py-1 text-gray-400">PHASE: CONCEPT</div>
+                    <div class="text-neon-cyan text-4xl mb-6"><i class="fas fa-microchip"></i></div>
+                    <h3 class="text-2xl font-display font-bold text-white mb-4">Avionics Core</h3>
+                    <p class="text-gray-400 font-mono text-sm mb-6">
+                        Designing a custom Flight Computer using Arduino and Raspberry Pi. Sensor fusion for gyroscope, accelerometer, and barometer data.
+                    </p>
+                    <div class="w-full bg-gray-800 h-1 mt-4">
+                        <div class="bg-neon-cyan h-1 w-1/4 shadow-[0_0_10px_#00f3ff]"></div>
+                    </div>
+                    <span class="text-xs font-mono text-neon-cyan mt-2 block">25% COMPLETE</span>
+                </div>
+
+                <div class="group relative bg-black border border-gray-800 p-8 hover:border-neon-cyan transition duration-300">
+                    <div class="absolute top-0 right-0 bg-gray-800 text-xs font-mono px-2 py-1 text-gray-400">PHASE: RESEARCH</div>
+                    <div class="text-neon-cyan text-4xl mb-6"><i class="fas fa-satellite"></i></div>
+                    <h3 class="text-2xl font-display font-bold text-white mb-4">CubeSat Design</h3>
+                    <p class="text-gray-400 font-mono text-sm mb-6">
+                        Theoretical CAD modeling of a 1U CubeSat structure. Focus on thermal management and solar panel deployment mechanisms.
+                    </p>
+                    <div class="w-full bg-gray-800 h-1 mt-4">
+                        <div class="bg-neon-cyan h-1 w-1/2 shadow-[0_0_10px_#00f3ff]"></div>
+                    </div>
+                    <span class="text-xs font-mono text-neon-cyan mt-2 block">50% COMPLETE</span>
+                </div>
+
             </div>
-            
-        </section>
-        <!-- Footer Section -->
-        <footer class="bg-gray-800 text-white py-4 hidden-footer">
-            <div class="container mx-auto text-center">
-                <p>Follow us:
-                    <a href="#" class="text-white mx-2"><i class="fab fa-facebook"></i></a>
-                    <a href="#" class="text-white mx-2"><i class="fab fa-twitter"></i></a>
-                    <a href="#" class="text-white mx-2"><i class="fab fa-instagram"></i></a>
-                </p>
-                <p>&copy; 2024 Myanmar Space Exploration. All rights reserved.</p>
+        </div>
+    </section>
+
+    <section class="py-12 bg-black border-y border-gray-800 overflow-hidden">
+        <div class="container mx-auto px-6">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center font-mono text-gray-600 text-xs">
+                <div class="border border-gray-800 p-4">
+                    <span class="block text-gray-400 text-lg mb-1">0.00</span>
+                    ORBITAL VELOCITY
+                </div>
+                <div class="border border-gray-800 p-4">
+                    <span class="block text-gray-400 text-lg mb-1">NOMINAL</span>
+                    ATMOSPHERIC PRESSURE
+                </div>
+                <div class="border border-gray-800 p-4">
+                    <span class="block text-gray-400 text-lg mb-1">OFFLINE</span>
+                    PROPULSION BUS
+                </div>
+                <div class="border border-gray-800 p-4">
+                    <span class="block text-neon-cyan text-lg mb-1 animate-pulse">ACTIVE</span>
+                    USER TERMINAL
+                </div>
             </div>
-        </footer>   
+        </div>
+    </section>
 
+    <footer class="bg-deep-space py-10 text-center">
+        <h2 class="font-display font-bold text-2xl text-white mb-4">PROJECT HORIZON</h2>
+        <p class="font-mono text-gray-500 text-sm mb-6">
+            // IMAGINATION IS THE ULTIMATE PROPULSION //
+        </p>
+        <div class="text-xs text-gray-700 max-w-lg mx-auto leading-relaxed">
+            <p class="mb-2">DISCLAIMER:</p>
+            <p>This is a personal independent research project. Not affiliated with any government space agency. All missions described are simulations, models, or theoretical concepts unless stated otherwise.</p>
+        </div>
+        <p class="mt-8 font-mono text-neon-cyan text-xs">
+            CODED BY ONE HUMAN. &copy; 2026.
+        </p>
+    </footer>
 
-    <!-- JavaScript to toggle the class -->
     <script>
-        function toggleFooter() {
-            document.body.classList.toggle('hidden-footer');
-        }
+        // Simple script to randomize the CPU number for effect
+        setInterval(() => {
+            const cpu = Math.floor(Math.random() * (45 - 10 + 1) + 10);
+            document.getElementById('cpu-stat').innerText = cpu;
+        }, 2000);
     </script>
-
-
-
-
-    <!-- Smooth scrolling script -->
-    <script>
-        $(document).ready(function () {
-            $("a").on('click', function (event) {
-                if (this.hash !== "") {
-                    event.preventDefault();
-                    var hash = this.hash;
-                    $('html, body').animate({
-                        scrollTop: $(hash).offset().top
-                    }, 800, function () {
-                        window.location.hash = hash;
-                    });
-                }
-            });
-        });
-
-        // Simulate form submission
-        function submitForm() {
-            alert('Form submitted! (Simulation)');
-            // You can add AJAX code here to handle actual form submission
-        }
-    </script>
-    <script src="https://kit.fontawesome.com/your-fontawesome-kit.js" crossorigin="anonymous"></script>
-    <script>
-        function toggleMenu() {
-            // Add your logic to toggle the menu here
-            console.log("Menu toggled");
-        }
-    </script>
-
 </body>
 </html>
