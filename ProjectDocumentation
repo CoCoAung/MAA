@@ -1,0 +1,37 @@
+Myanmar Space Association (MAA) App
+
+This is a space exploration dashboard built with React and Tailwind CSS.
+
+Features
+
+Lunar Recon Orbiter Link: Real-time simulation of the Moon's phase and telemetry.
+
+Deep Space Scanner: Simulates connecting to various satellites (JWST, Hubble, etc.) to view deep space objects.
+
+Auto-Scan: Automatically searches for signals.
+
+Skip: Automatically skips corrupt feeds or solar system objects (Deep Space focus).
+
+Telemetry Dashboard: System diagnostics and audio downlink test (with toggle).
+
+How to Run
+
+Make sure you have Node.js installed.
+
+Download these files.
+
+Run npm install to install dependencies.
+
+Run npm start to launch the app.
+
+Technologies
+
+React.js
+
+Lucide React (Icons)
+
+Tailwind CSS (Styling)
+
+Web Audio API (for sound effects)
+
+Enjoy exploring the cosmos!
