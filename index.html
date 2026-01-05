@@ -1,278 +1,313 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PROJECT: HORIZON | Independent Space Research</title>
+    <title>MAA_OPS | Independent Space Command</title>
     
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Inter:wght@300;400&display=swap">
-    
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
-    
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                        display: ['Orbitron', 'sans-serif'],
-                        mono: ['Share Tech Mono', 'monospace'],
-                    },
-                    colors: {
-                        'neon-cyan': '#00f3ff',
-                        'neon-red': '#ff003c',
-                        'deep-space': '#050505',
-                        'panel-gray': '#121212',
-                    },
-                    backgroundImage: {
-                        'grid-pattern': "linear-gradient(to right, #1f2937 1px, transparent 1px), linear-gradient(to bottom, #1f2937 1px, transparent 1px)",
-                    }
-                }
-            }
-        }
-    </script>
+    <script src="https://unpkg.com/lucide@latest"></script>
 
     <style>
-        body {
-            background-color: #050505;
-            color: #e5e5e5;
-            overflow-x: hidden;
-        }
-
-        /* Scanline effect for CRT monitor vibe */
-        .scanline {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100vh;
-            background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0) 50%, rgba(0,0,0,0.2) 50%, rgba(0,0,0,0.2));
-            background-size: 100% 4px;
-            pointer-events: none;
-            z-index: 999;
-            opacity: 0.15;
-        }
-
-        /* Glowing Text */
-        .glow-text {
-            text-shadow: 0 0 10px rgba(0, 243, 255, 0.7);
-        }
+        @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@500;700&display=swap');
         
-        .glow-red {
-            text-shadow: 0 0 10px rgba(255, 0, 60, 0.7);
+        :root {
+            --neon-blue: #3b82f6;
         }
 
-        /* Animated Border */
-        .cyber-border {
-            position: relative;
-            border: 1px solid #333;
+        body {
+            background-color: #010102;
+            margin: 0;
+            overflow: hidden;
+            color: #cbd5e1;
         }
-        .cyber-border::after {
-            content: '';
+
+        .font-tech { font-family: 'Share Tech Mono', monospace; }
+        .font-ui { font-family: 'Rajdhani', sans-serif; }
+
+        /* CRT Overlay Effect */
+        .crt-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.15) 50%), 
+                        linear-gradient(90deg, rgba(255, 0, 0, 0.05), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.05));
+            background-size: 100% 2px, 3px 100%;
+            pointer-events: none;
+            z-index: 100;
+            opacity: 0.3;
+        }
+
+        /* Scanline Animation */
+        @keyframes scan { 
+            0% { top: 0%; opacity: 0; } 
+            10% { opacity: 1; } 
+            90% { opacity: 1; } 
+            100% { top: 100%; opacity: 0; } 
+        }
+        .scanner-line {
             position: absolute;
-            top: 0;
-            left: 0;
             width: 100%;
-            height: 100%;
-            border: 1px solid transparent;
-            border-top-color: #00f3ff;
-            border-bottom-color: #00f3ff;
-            transform: scaleX(0);
-            transition: transform 0.4s ease;
-        }
-        .cyber-border:hover::after {
-            transform: scaleX(1);
+            height: 2px;
+            background: var(--neon-blue);
+            box-shadow: 0 0 15px var(--neon-blue);
+            animation: scan 2s linear infinite;
         }
 
-        /* Typing cursor */
-        .cursor-blink {
-            animation: blink 1s step-end infinite;
+        /* Glitch Animation */
+        @keyframes glitch {
+            0% { transform: translate(1px, 1px); }
+            50% { transform: translate(-2px, -1px); }
+            100% { transform: translate(0, 0); }
         }
-        @keyframes blink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0; }
-        }
+        .distortion { animation: glitch 0.3s infinite; filter: hue-rotate(90deg); }
+
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
+        
+        .fade-in { animation: fadeIn 0.5s ease-out forwards; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     </style>
 </head>
+<body>
+    <div id="root"></div>
 
-<body class="antialiased">
-    
-    <div class="scanline"></div>
-
-    <div class="fixed top-0 w-full z-50 bg-black/90 border-b border-gray-800 font-mono text-xs uppercase tracking-widest text-neon-cyan py-2 px-4 flex justify-between items-center backdrop-blur-sm">
-        <div class="flex items-center gap-4">
-            <span class="animate-pulse">● SYSTEM ONLINE</span>
-            <span>OP: SOLO_COMMAND</span>
-            <span class="hidden md:inline text-gray-500">LOC: CLASSIFIED</span>
-        </div>
-        <div class="flex items-center gap-4">
-            <span>CPU: <span id="cpu-stat">12</span>%</span>
-            <span>NET: SECURE</span>
-        </div>
-    </div>
-
-    <section class="min-h-screen flex flex-col justify-center items-center relative bg-[url('https://images.unsplash.com/photo-1462331940025-496dfbfc7564?q=80&w=2111&auto=format&fit=crop')] bg-cover bg-center bg-no-repeat bg-fixed">
-        <div class="absolute inset-0 bg-black/70"></div> <div class="relative z-10 text-center px-4 max-w-5xl">
-            <h2 class="text-neon-cyan font-mono text-sm md:text-lg mb-4 tracking-[0.3em]">INDEPENDENT AEROSPACE INITIATIVE</h2>
-            <h1 class="text-6xl md:text-8xl font-display font-black text-white mb-6 uppercase tracking-tighter leading-none">
-                PROJECT <br> <span class="text-transparent bg-clip-text bg-gradient-to-r from-neon-cyan to-blue-600 glow-text">HORIZON</span>
-            </h1>
-            <p class="text-gray-300 font-mono text-lg md:text-xl max-w-2xl mx-auto mb-10 border-l-2 border-neon-red pl-4 text-left">
-                > One Engineer.<br>
-                > One Vision.<br>
-                > No Bureaucracy. Just Physics.
-            </p>
-            
-            <div class="flex flex-col md:flex-row gap-4 justify-center">
-                <a href="#projects" class="cyber-border bg-neon-cyan/10 text-neon-cyan px-8 py-4 font-display font-bold uppercase tracking-widest hover:bg-neon-cyan hover:text-black transition duration-300">
-                    Access Flight Logs
-                </a>
-                <a href="#manifesto" class="cyber-border bg-black border border-gray-700 text-gray-400 px-8 py-4 font-display font-bold uppercase tracking-widest hover:border-neon-red hover:text-neon-red transition duration-300">
-                    Read Manifesto
-                </a>
-            </div>
-        </div>
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
         
-        <div class="absolute bottom-0 w-full h-32 bg-gradient-to-t from-deep-space to-transparent"></div>
-    </section>
+        // Define Icons from Lucide (UMD version)
+        const { 
+            Moon, Telescope, Activity, Radar, Cpu, Shield, 
+            Volume2, ChevronRight, Search, Crosshair, 
+            Lock, Wifi, Power
+        } = lucide;
 
-    <section id="manifesto" class="py-24 bg-deep-space relative">
-        <div class="container mx-auto px-6 grid md:grid-cols-2 gap-16 items-center">
-            <div>
-                <h2 class="text-4xl font-display font-bold text-white mb-8 border-l-4 border-neon-red pl-6">
-                    THE <span class="text-neon-red glow-red">SOLO</span> PARAMETER
-                </h2>
-                <div class="font-mono text-gray-400 space-y-6 leading-relaxed text-sm md:text-base text-justify">
-                    <p>
-                        <span class="text-neon-cyan">> INIT_STATEMENT:</span> 
-                        Space exploration is no longer the exclusive domain of superpowers and conglomerates. The tools of the trade—coding, simulation, 3D printing, and propulsion theory—are now in the hands of the individual.
-                    </p>
-                    <p>
-                        This is not a government agency. There is no board of directors. This is a private research initiative focused on orbital mechanics simulations, rocketry avionics, and theoretical mission planning.
-                    </p>
-                    <p>
-                        I am building the future from a single terminal. 
-                    </p>
-                    <div class="p-4 bg-gray-900 border border-gray-800 text-neon-cyan mt-6">
-                        "The best aerospace engineering is done when the only limit is your own imagination."
+        const App = () => {
+            const [isAuthorized, setIsAuthorized] = useState(false);
+            const [activeTab, setActiveTab] = useState('lunar_link');
+            const [isConnected, setIsConnected] = useState(false);
+            const [logs, setLogs] = useState(["BOOT_SEQUENCE: OK", "INITIALIZING SPACE COMMAND...", "UPLINK_READY: STANDBY"]);
+            const [audioContext, setAudioContext] = useState(null);
+            const oscillatorRef = useRef(null);
+
+            // Telescope Feed State
+            const [currentFeed, setCurrentFeed] = useState(null);
+            const [isScanning, setIsScanning] = useState(false);
+            const [scanProgress, setScanProgress] = useState(0);
+            const [scanIndex, setScanIndex] = useState(0);
+            const [isDistorted, setIsDistorted] = useState(false);
+
+            // Database
+            const satelliteDb = [
+                { id: "JWST-NIR-01", name: "James Webb", target: "Carina Nebula", freq: "25.4 GHz", url: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/03-NIRCAM_Image_of_the_Carina_Nebula.jpg/1280px-03-NIRCAM_Image_of_the_Carina_Nebula.jpg", desc: "Star formation detection." },
+                { id: "HST-VIS-09", name: "Hubble", target: "Pillars of Creation", freq: "12.8 GHz", url: "https://upload.wikimedia.org/wikipedia/commons/b/b2/Eagle_Nebula_Pillars_of_Creation.jpg", desc: "M16 interstellar gas columns." },
+                { id: "EHT-BLK-M87", name: "EHT Network", target: "M87 Black Hole", freq: "230 GHz", url: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/Black_hole_-_Messier_87_crop_max_res.jpg/1024px-Black_hole_-_Messier_87_crop_max_res.jpg", desc: "Event horizon shadow." }
+            ];
+
+            const [moonData, setMoonData] = useState({ phase: 0, illumination: 0, distance: 384400, name: 'Calibrating...' });
+
+            const calculateMoonPhase = () => {
+                const synodic = 29.53058867;
+                const baseDate = new Date('2000-01-06T18:14:00Z');
+                const diff = (new Date().getTime() - baseDate.getTime()) / (1000 * 60 * 60 * 24);
+                const currentCycle = (diff / synodic) % 1;
+                const illumination = (1 - Math.abs(currentCycle - 0.5) * 2) * 100;
+                setMoonData({
+                    phase: currentCycle,
+                    illumination: illumination,
+                    distance: 384400 + (Math.sin(currentCycle * Math.PI * 2) * 21000),
+                    name: illumination > 98 ? 'Full Moon' : illumination < 2 ? 'New Moon' : 'Orbital Phase Active'
+                });
+            };
+
+            useEffect(() => {
+                calculateMoonPhase();
+                const interval = setInterval(calculateMoonPhase, 10000);
+                return () => clearInterval(interval);
+            }, []);
+
+            const addLog = (msg) => {
+                setLogs(prev => [`> ${new Date().toLocaleTimeString('en-GB')} : ${msg}`, ...prev].slice(0, 20));
+            };
+
+            const toggleConnection = () => {
+                if (isConnected) {
+                    setIsConnected(false);
+                    addLog("COMMS: Link Severed.");
+                    setCurrentFeed(null);
+                } else {
+                    setIsConnected(true);
+                    addLog("COMMS: Secure Uplink Established.");
+                }
+            };
+
+            const findWorkingFeed = () => {
+                setIsScanning(true);
+                setScanProgress(0);
+                let p = 0;
+                const interval = setInterval(() => {
+                    p += 10;
+                    setScanProgress(p);
+                    if (p >= 100) {
+                        clearInterval(interval);
+                        setIsScanning(false);
+                        setCurrentFeed(satelliteDb[Math.floor(Math.random() * satelliteDb.length)]);
+                        addLog("DATA: Packet Received.");
+                    }
+                }, 150);
+            };
+
+            // Authentication Layer
+            if (!isAuthorized) {
+                return (
+                    <div className="h-screen bg-black flex flex-col items-center justify-center font-mono p-4 fade-in">
+                        <div className="w-full max-w-md border border-blue-900/30 p-8 bg-blue-950/5 relative overflow-hidden text-center">
+                            <Shield className="mx-auto mb-4 text-blue-500 animate-pulse" size={40} />
+                            <h2 className="text-blue-500 text-sm mb-6 tracking-[0.2em] font-bold">PRIVATE ACCESS PORTAL</h2>
+                            <div className="space-y-2 mb-8 text-left border-l border-blue-900 pl-4">
+                                <p className="text-blue-800 text-[10px]">ID: SOLO_COMMAND_03</p>
+                                <p className="text-blue-800 text-[10px]">CLASS: INDEPENDENT_ENGINEER</p>
+                            </div>
+                            <button 
+                                onClick={() => setIsAuthorized(true)}
+                                className="w-full border border-blue-500 py-3 text-blue-400 hover:bg-blue-500 hover:text-black transition-all font-bold tracking-[0.3em] text-xs"
+                            >
+                                START_AUTHENTICATION
+                            </button>
+                        </div>
                     </div>
-                </div>
-            </div>
-            
-            <div class="bg-gray-900 p-2 rounded border border-gray-700 shadow-2xl shadow-neon-cyan/10">
-                <div class="bg-black p-6 font-mono text-xs md:text-sm h-80 overflow-y-auto text-green-500 rounded-sm">
-                    <p class="mb-2">user@horizon-lab:~$ ./init_sequence.sh</p>
-                    <p class="mb-2 text-white">Loading modules...</p>
-                    <p class="mb-2">[OK] Orbital Dynamics ...... LOADED</p>
-                    <p class="mb-2">[OK] Telemetry Systems ..... LOADED</p>
-                    <p class="mb-2">[OK] Coffee Machine ........ LOADED</p>
-                    <p class="mb-2 text-yellow-500">WARNING: Budget Critical (Self-Funded)</p>
-                    <p class="mb-2 text-white">Compiling trajectory data...</p>
-                    <p class="mb-2">Processing...</p>
-                    <p class="mb-2 animate-pulse">_</p>
-                </div>
-            </div>
-        </div>
-    </section>
+                );
+            }
 
-    <section id="projects" class="py-24 bg-panel-gray bg-[size:40px_40px] bg-grid-pattern border-t border-gray-800">
-        <div class="container mx-auto px-6">
-            <h2 class="text-3xl font-display font-bold text-center mb-16 uppercase tracking-widest">
-                <i class="fas fa-code-branch text-neon-cyan mr-3"></i>Active Workstreams
-            </h2>
+            return (
+                <div className="flex flex-col md:flex-row h-screen bg-[#010102] text-slate-400 font-ui overflow-hidden fade-in">
+                    <div className="crt-overlay"></div>
+                    
+                    {/* Sidebar */}
+                    <aside className="md:w-64 border-r border-white/5 bg-[#050508] flex flex-col z-30">
+                        <div className="p-6 border-b border-white/5 flex items-center gap-3">
+                            <Radar className="text-blue-500" size={20} />
+                            <div>
+                                <h1 className="font-bold text-white text-sm tracking-widest">MAA_OPS</h1>
+                                <p className="text-[9px] text-slate-600 font-tech">NODE_3: PRIVATE</p>
+                            </div>
+                        </div>
 
-            <div class="grid md:grid-cols-3 gap-8">
-                
-                <div class="group relative bg-black border border-gray-800 p-8 hover:border-neon-cyan transition duration-300">
-                    <div class="absolute top-0 right-0 bg-gray-800 text-xs font-mono px-2 py-1 text-gray-400">PHASE: ALPHA</div>
-                    <div class="text-neon-cyan text-4xl mb-6"><i class="fas fa-laptop-code"></i></div>
-                    <h3 class="text-2xl font-display font-bold text-white mb-4">Sim-Earth</h3>
-                    <p class="text-gray-400 font-mono text-sm mb-6">
-                        Developing a custom Python-based orbital decay simulator. Calculating atmospheric drag on Low Earth Orbit (LEO) objects.
-                    </p>
-                    <div class="w-full bg-gray-800 h-1 mt-4">
-                        <div class="bg-neon-cyan h-1 w-3/4 shadow-[0_0_10px_#00f3ff]"></div>
-                    </div>
-                    <span class="text-xs font-mono text-neon-cyan mt-2 block">75% COMPLETE</span>
-                </div>
+                        <nav className="flex-1 p-4 space-y-2">
+                            {[
+                                {id: 'lunar_link', label: 'LUNAR_ARRAY', icon: Moon},
+                                {id: 'telescope', label: 'DEEP_SKY', icon: Telescope},
+                                {id: 'system', label: 'HEALTH', icon: Activity}
+                            ].map(btn => (
+                                <button 
+                                    key={btn.id}
+                                    onClick={() => setActiveTab(btn.id)}
+                                    className={`flex items-center gap-3 w-full p-3 rounded text-xs font-tech tracking-tighter transition-all ${activeTab === btn.id ? 'bg-blue-900/20 text-blue-400 border border-blue-500/30' : 'hover:bg-white/5'}`}
+                                >
+                                    <btn.icon size={16} /> {btn.label}
+                                </button>
+                            ))}
+                        </nav>
 
-                <div class="group relative bg-black border border-gray-800 p-8 hover:border-neon-cyan transition duration-300">
-                    <div class="absolute top-0 right-0 bg-gray-800 text-xs font-mono px-2 py-1 text-gray-400">PHASE: CONCEPT</div>
-                    <div class="text-neon-cyan text-4xl mb-6"><i class="fas fa-microchip"></i></div>
-                    <h3 class="text-2xl font-display font-bold text-white mb-4">Avionics Core</h3>
-                    <p class="text-gray-400 font-mono text-sm mb-6">
-                        Designing a custom Flight Computer using Arduino and Raspberry Pi. Sensor fusion for gyroscope, accelerometer, and barometer data.
-                    </p>
-                    <div class="w-full bg-gray-800 h-1 mt-4">
-                        <div class="bg-neon-cyan h-1 w-1/4 shadow-[0_0_10px_#00f3ff]"></div>
-                    </div>
-                    <span class="text-xs font-mono text-neon-cyan mt-2 block">25% COMPLETE</span>
-                </div>
+                        <div className="p-4">
+                            <button 
+                                onClick={toggleConnection}
+                                className={`w-full py-3 rounded text-[10px] font-tech font-bold transition-all ${isConnected ? 'bg-red-900/20 text-red-500 border border-red-500/20' : 'bg-blue-600 text-white'}`}
+                            >
+                                {isConnected ? 'DISCONNECT' : 'INITIALIZE_UPLINK'}
+                            </button>
+                        </div>
+                    </aside>
 
-                <div class="group relative bg-black border border-gray-800 p-8 hover:border-neon-cyan transition duration-300">
-                    <div class="absolute top-0 right-0 bg-gray-800 text-xs font-mono px-2 py-1 text-gray-400">PHASE: RESEARCH</div>
-                    <div class="text-neon-cyan text-4xl mb-6"><i class="fas fa-satellite"></i></div>
-                    <h3 class="text-2xl font-display font-bold text-white mb-4">CubeSat Design</h3>
-                    <p class="text-gray-400 font-mono text-sm mb-6">
-                        Theoretical CAD modeling of a 1U CubeSat structure. Focus on thermal management and solar panel deployment mechanisms.
-                    </p>
-                    <div class="w-full bg-gray-800 h-1 mt-4">
-                        <div class="bg-neon-cyan h-1 w-1/2 shadow-[0_0_10px_#00f3ff]"></div>
-                    </div>
-                    <span class="text-xs font-mono text-neon-cyan mt-2 block">50% COMPLETE</span>
-                </div>
+                    {/* Main Workspace */}
+                    <main className="flex-1 flex flex-col bg-black relative">
+                        <header className="p-4 border-b border-white/5 flex justify-between items-center text-[10px] font-tech">
+                            <div className="flex items-center gap-2">
+                                <div className={`w-2 h-2 rounded-full ${isConnected ? 'bg-green-500 animate-pulse' : 'bg-red-500'}`}></div>
+                                <span className="text-white uppercase">STATUS: {isConnected ? 'LINK_ACTIVE' : 'OFFLINE'}</span>
+                            </div>
+                            <span className="text-slate-600 uppercase">SYS_TIME: {new Date().toLocaleTimeString()}</span>
+                        </header>
 
-            </div>
-        </div>
-    </section>
+                        <div className="flex-1 p-6 overflow-y-auto">
+                            {activeTab === 'lunar_link' && (
+                                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 fade-in">
+                                    <div className="bg-[#0a0a0c] border border-white/10 p-2 relative aspect-square md:aspect-video flex items-center justify-center overflow-hidden">
+                                        <div className="scanner-line"></div>
+                                        {!isConnected ? (
+                                            <p className="text-slate-700 font-tech text-xs">AWAITING_SIGNAL_LOCK...</p>
+                                        ) : (
+                                            <div className="text-center">
+                                                <Moon size={120} className="text-white opacity-20 mb-4 mx-auto" strokeWidth={1}/>
+                                                <p className="font-tech text-xs text-blue-400 uppercase tracking-widest">{moonData.name}</p>
+                                            </div>
+                                        )}
+                                        <Crosshair className="absolute text-white/5 w-full h-full p-10 pointer-events-none" />
+                                    </div>
 
-    <section class="py-12 bg-black border-y border-gray-800 overflow-hidden">
-        <div class="container mx-auto px-6">
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center font-mono text-gray-600 text-xs">
-                <div class="border border-gray-800 p-4">
-                    <span class="block text-gray-400 text-lg mb-1">0.00</span>
-                    ORBITAL VELOCITY
-                </div>
-                <div class="border border-gray-800 p-4">
-                    <span class="block text-gray-400 text-lg mb-1">NOMINAL</span>
-                    ATMOSPHERIC PRESSURE
-                </div>
-                <div class="border border-gray-800 p-4">
-                    <span class="block text-gray-400 text-lg mb-1">OFFLINE</span>
-                    PROPULSION BUS
-                </div>
-                <div class="border border-gray-800 p-4">
-                    <span class="block text-neon-cyan text-lg mb-1 animate-pulse">ACTIVE</span>
-                    USER TERMINAL
-                </div>
-            </div>
-        </div>
-    </section>
+                                    <div className="space-y-4">
+                                        <div className="bg-[#0a0a0c] border border-white/10 p-5 rounded-sm">
+                                            <h3 className="text-xs font-tech text-slate-500 mb-4 border-b border-white/5 pb-2">LUNAR TELEMETRY</h3>
+                                            <div className="grid grid-cols-2 gap-4">
+                                                <div>
+                                                    <p className="text-[9px] text-blue-500 font-tech uppercase">Illumination</p>
+                                                    <p className="text-3xl text-white font-ui">{isConnected ? moonData.illumination.toFixed(1) : '0.0'}%</p>
+                                                </div>
+                                                <div>
+                                                    <p className="text-[9px] text-blue-500 font-tech uppercase">Distance</p>
+                                                    <p className="text-3xl text-white font-ui">{isConnected ? Math.round(moonData.distance).toLocaleString() : '---'}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div className="bg-black border border-white/10 p-4 h-48 font-tech text-[10px] overflow-y-auto scrollbar-hide">
+                                            <p className="text-green-500 border-b border-green-950 mb-2">LIVE_LOG_STREAM</p>
+                                            {logs.map((log, i) => <div key={i} className="mb-1 opacity-70">{log}</div>)}
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
 
-    <footer class="bg-deep-space py-10 text-center">
-        <h2 class="font-display font-bold text-2xl text-white mb-4">PROJECT HORIZON</h2>
-        <p class="font-mono text-gray-500 text-sm mb-6">
-            // IMAGINATION IS THE ULTIMATE PROPULSION //
-        </p>
-        <div class="text-xs text-gray-700 max-w-lg mx-auto leading-relaxed">
-            <p class="mb-2">DISCLAIMER:</p>
-            <p>This is a personal independent research project. Not affiliated with any government space agency. All missions described are simulations, models, or theoretical concepts unless stated otherwise.</p>
-        </div>
-        <p class="mt-8 font-mono text-neon-cyan text-xs">
-            CODED BY ONE HUMAN. &copy; 2026.
-        </p>
-    </footer>
+                            {activeTab === 'telescope' && (
+                                <div className="h-full flex flex-col fade-in">
+                                    {!isConnected ? (
+                                        <div className="flex-1 border border-dashed border-white/10 rounded flex flex-col items-center justify-center opacity-30">
+                                            <Telescope size={40} className="mb-4" />
+                                            <p className="text-xs font-tech">AUTHORIZATION_REQUIRED</p>
+                                        </div>
+                                    ) : (
+                                        <div className="flex-1 flex flex-col gap-4">
+                                            <div className="flex-1 bg-[#050508] border border-white/10 relative overflow-hidden flex items-center justify-center">
+                                                {isScanning ? (
+                                                    <div className="text-center">
+                                                        <Search className="animate-ping text-blue-500 mb-4 mx-auto" />
+                                                        <div className="w-48 h-1 bg-slate-900 rounded-full overflow-hidden">
+                                                            <div className="h-full bg-blue-500" style={{width: `${scanProgress}%`}}></div>
+                                                        </div>
+                                                    </div>
+                                                ) : currentFeed ? (
+                                                    <img src={currentFeed.url} className="w-full h-full object-cover grayscale contrast-125 opacity-60" />
+                                                ) : (
+                                                    <button onClick={findWorkingFeed} className="bg-blue-600 px-6 py-2 text-white font-tech text-xs">INITIATE_SCAN</button>
+                                                )}
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+                            )}
+                        </div>
+                    </main>
+                </div>
+            );
+        };
 
-    <script>
-        // Simple script to randomize the CPU number for effect
-        setInterval(() => {
-            const cpu = Math.floor(Math.random() * (45 - 10 + 1) + 10);
-            document.getElementById('cpu-stat').innerText = cpu;
-        }, 2000);
+        // Render the app
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+
+        // Initialize Icons
+        setTimeout(() => lucide.createIcons(), 500);
     </script>
 </body>
 </html>
