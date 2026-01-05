@@ -1,17 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MAA | Project Horizon</title>
+    <title>PROJECT: HORIZON | Independent Space Research</title>
     
-    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Inter:wght@300;400&display=swap">
     
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@500;700;800&family=Orbitron:wght@400;700;900&family=Inter:wght@300;400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <script>
@@ -22,8 +21,6 @@
                         sans: ['Inter', 'sans-serif'],
                         display: ['Orbitron', 'sans-serif'],
                         mono: ['Share Tech Mono', 'monospace'],
-                        ui: ['Rajdhani', 'sans-serif'],
-                        tech: ['Share Tech Mono', 'monospace'],
                     },
                     colors: {
                         'neon-cyan': '#00f3ff',
@@ -40,716 +37,242 @@
     </script>
 
     <style>
-        /* Shared & Reset */
-        body { background-color: #050505; color: #e5e5e5; margin: 0; }
-
-        /* --- HORIZON LANDING STYLES --- */
-        .scanline {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
-            background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0) 50%, rgba(0,0,0,0.2) 50%, rgba(0,0,0,0.2));
-            background-size: 100% 4px; pointer-events: none; z-index: 999; opacity: 0.15;
+        body {
+            background-color: #050505;
+            color: #e5e5e5;
+            overflow-x: hidden;
         }
-        .glow-text { text-shadow: 0 0 10px rgba(0, 243, 255, 0.7); }
+
+        /* Scanline effect for CRT monitor vibe */
+        .scanline {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0) 50%, rgba(0,0,0,0.2) 50%, rgba(0,0,0,0.2));
+            background-size: 100% 4px;
+            pointer-events: none;
+            z-index: 999;
+            opacity: 0.15;
+        }
+
+        /* Glowing Text */
+        .glow-text {
+            text-shadow: 0 0 10px rgba(0, 243, 255, 0.7);
+        }
+        
+        .glow-red {
+            text-shadow: 0 0 10px rgba(255, 0, 60, 0.7);
+        }
+
+        /* Animated Border */
         .cyber-border {
-            position: relative; border: 1px solid #333;
+            position: relative;
+            border: 1px solid #333;
         }
         .cyber-border::after {
-            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            border: 1px solid transparent; border-top-color: #00f3ff; border-bottom-color: #00f3ff;
-            transform: scaleX(0); transition: transform 0.4s ease;
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 1px solid transparent;
+            border-top-color: #00f3ff;
+            border-bottom-color: #00f3ff;
+            transform: scaleX(0);
+            transition: transform 0.4s ease;
         }
-        .cyber-border:hover::after { transform: scaleX(1); }
+        .cyber-border:hover::after {
+            transform: scaleX(1);
+        }
 
-        /* MAA LOGO STYLES */
-        .maa-logo-box {
-            display: inline-block; border: 2px solid #00f3ff; transform: skew(-10deg);
-            background: rgba(0, 243, 255, 0.05); box-shadow: 0 0 15px rgba(0, 243, 255, 0.2);
+        /* Typing cursor */
+        .cursor-blink {
+            animation: blink 1s step-end infinite;
         }
-
-        /* --- MAA_OPS STATION STYLES --- */
-        .crt-overlay {
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.15) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.05), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.05));
-            background-size: 100% 2px, 3px 100%; pointer-events: none;
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
         }
-        
-        /* UPDATED DISTORTION: Now applied to image only */
-        .distortion { 
-            filter: url(#noise); 
-            animation: glitch 0.3s infinite; 
-        }
-        
-        @keyframes glitch { 
-            0% { transform: translate(1px, 1px); } 
-            50% { transform: translate(-2px, 1px); } 
-            100% { transform: translate(0, 0); } 
-        }
-        
-        @keyframes scan { 
-            0% { top: 0%; opacity: 0; } 10% { opacity: 1; } 90% { opacity: 1; } 100% { top: 100%; opacity: 0; } 
-        }
-        .scrollbar-hide::-webkit-scrollbar { display: none; }
-        .animate-fade-in { animation: fadeIn 0.4s ease-out; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
-        
-        #station-layer { display: none; height: 100vh; overflow: hidden; background-color: #010102; }
-        .interactive-project { cursor: pointer; }
     </style>
 </head>
 
-<body class="antialiased overflow-x-hidden">
+<body class="antialiased">
+    
+    <div class="scanline"></div>
 
-    <div id="landing-layer">
-        <div class="scanline"></div>
+    <div class="fixed top-0 w-full z-50 bg-black/90 border-b border-gray-800 font-mono text-xs uppercase tracking-widest text-neon-cyan py-2 px-4 flex justify-between items-center backdrop-blur-sm">
+        <div class="flex items-center gap-4">
+            <span class="animate-pulse">● SYSTEM ONLINE</span>
+            <span>OP: SOLO_COMMAND</span>
+            <span class="hidden md:inline text-gray-500">LOC: CLASSIFIED</span>
+        </div>
+        <div class="flex items-center gap-4">
+            <span>CPU: <span id="cpu-stat">12</span>%</span>
+            <span>NET: SECURE</span>
+        </div>
+    </div>
 
-        <div class="fixed top-0 w-full z-50 bg-black/90 border-b border-gray-800 font-mono text-xs uppercase tracking-widest text-neon-cyan py-3 px-6 flex justify-between items-center backdrop-blur-sm">
-            <div class="flex items-center gap-4">
-                <div class="maa-logo-box border border-neon-cyan/50 px-2 py-0 transform-none skew-x-[-10deg]">
-                    <span class="font-display font-black text-sm italic skew-x-[10deg] inline-block text-neon-cyan">MAA</span>
-                </div>
-                <span class="animate-pulse hidden md:inline text-white/80">● SYSTEM ONLINE</span>
-            </div>
-            <div class="flex items-center gap-4">
-                <span>CPU: <span id="cpu-stat">12</span>%</span>
-                <span>NET: SECURE</span>
+    <section class="min-h-screen flex flex-col justify-center items-center relative bg-[url('https://images.unsplash.com/photo-1462331940025-496dfbfc7564?q=80&w=2111&auto=format&fit=crop')] bg-cover bg-center bg-no-repeat bg-fixed">
+        <div class="absolute inset-0 bg-black/70"></div> <div class="relative z-10 text-center px-4 max-w-5xl">
+            <h2 class="text-neon-cyan font-mono text-sm md:text-lg mb-4 tracking-[0.3em]">INDEPENDENT AEROSPACE INITIATIVE</h2>
+            <h1 class="text-6xl md:text-8xl font-display font-black text-white mb-6 uppercase tracking-tighter leading-none">
+                PROJECT <br> <span class="text-transparent bg-clip-text bg-gradient-to-r from-neon-cyan to-blue-600 glow-text">HORIZON</span>
+            </h1>
+            <p class="text-gray-300 font-mono text-lg md:text-xl max-w-2xl mx-auto mb-10 border-l-2 border-neon-red pl-4 text-left">
+                > One Engineer.<br>
+                > One Vision.<br>
+                > No Bureaucracy. Just Physics.
+            </p>
+            
+            <div class="flex flex-col md:flex-row gap-4 justify-center">
+                <a href="#projects" class="cyber-border bg-neon-cyan/10 text-neon-cyan px-8 py-4 font-display font-bold uppercase tracking-widest hover:bg-neon-cyan hover:text-black transition duration-300">
+                    Access Flight Logs
+                </a>
+                <a href="#manifesto" class="cyber-border bg-black border border-gray-700 text-gray-400 px-8 py-4 font-display font-bold uppercase tracking-widest hover:border-neon-red hover:text-neon-red transition duration-300">
+                    Read Manifesto
+                </a>
             </div>
         </div>
+        
+        <div class="absolute bottom-0 w-full h-32 bg-gradient-to-t from-deep-space to-transparent"></div>
+    </section>
 
-        <section class="min-h-screen flex flex-col justify-center items-center relative bg-[url('https://images.unsplash.com/photo-1462331940025-496dfbfc7564?q=80&w=2111&auto=format&fit=crop')] bg-cover bg-center bg-no-repeat bg-fixed">
-            <div class="absolute inset-0 bg-black/70"></div> 
-            <div class="relative z-10 text-center px-4 max-w-5xl">
-                <h2 class="text-neon-cyan font-mono text-sm md:text-lg mb-4 tracking-[0.3em]">INDEPENDENT AEROSPACE INITIATIVE</h2>
-                <h1 class="text-6xl md:text-8xl font-display font-black text-white mb-6 uppercase tracking-tighter leading-none">
-                    PROJECT <br> <span class="text-transparent bg-clip-text bg-gradient-to-r from-neon-cyan to-blue-600 glow-text">HORIZON</span>
-                </h1>
-                <p class="text-gray-300 font-mono text-lg md:text-xl max-w-2xl mx-auto mb-10 border-l-2 border-neon-red pl-4 text-left">
-                    > One Engineer. One Vision.<br>
-                    > Powered by MAA Technologies.
-                </p>
-                <div class="flex flex-col md:flex-row gap-4 justify-center">
-                    <a href="#projects" class="cyber-border bg-neon-cyan/10 text-neon-cyan px-8 py-4 font-display font-bold uppercase tracking-widest hover:bg-neon-cyan hover:text-black transition duration-300">
-                        <i class="fas fa-terminal mr-2"></i>Access MAA Terminal
-                    </a>
-                    <a href="#manifesto" class="cyber-border bg-black border border-gray-700 text-gray-400 px-8 py-4 font-display font-bold uppercase tracking-widest hover:border-neon-red hover:text-neon-red transition duration-300">
-                        Read Manifesto
-                    </a>
-                </div>
-            </div>
-            <div class="absolute bottom-0 w-full h-32 bg-gradient-to-t from-deep-space to-transparent"></div>
-        </section>
-
-        <section id="manifesto" class="py-24 bg-deep-space relative">
-            <div class="container mx-auto px-6 grid md:grid-cols-2 gap-16 items-center">
-                <div>
-                    <h2 class="text-4xl font-display font-bold text-white mb-8 border-l-4 border-neon-red pl-6">
-                        THE <span class="text-neon-red glow-red">SOLO</span> PARAMETER
-                    </h2>
-                    <div class="font-mono text-gray-400 space-y-6 leading-relaxed text-sm md:text-base text-justify">
-                        <p><span class="text-neon-cyan">> INIT_STATEMENT:</span> Space exploration is no longer the exclusive domain of superpowers and conglomerates. The tools of the trade—coding, simulation, 3D printing, and propulsion theory—are now in the hands of the individual.</p>
-                        <p>This is not a government agency. There is no board of directors. This is a private research initiative focused on orbital mechanics simulations, rocketry avionics, and theoretical mission planning.</p>
-                        <p>I am building the future from a single terminal.</p>
-                        <div class="p-4 bg-gray-900 border border-gray-800 text-neon-cyan mt-6">"The best aerospace engineering is done when the only limit is your own imagination."</div>
-                    </div>
-                </div>
-                <div class="bg-gray-900 p-2 rounded border border-gray-700 shadow-2xl shadow-neon-cyan/10">
-                    <div class="bg-black p-6 font-mono text-xs md:text-sm h-80 overflow-y-auto text-green-500 rounded-sm">
-                        <p class="mb-2">user@horizon-lab:~$ ./init_sequence.sh</p>
-                        <p class="mb-2 text-white">Loading modules...</p>
-                        <p class="mb-2">[OK] Orbital Dynamics ...... LOADED</p>
-                        <p class="mb-2">[OK] Telemetry Systems ..... LOADED</p>
-                        <p class="mb-2">[OK] MAA_OPS Uplink ........ <span class="text-neon-cyan animate-pulse">ESTABLISHED</span></p>
-                        <p class="mb-2 text-yellow-500">WARNING: Budget Critical (Self-Funded)</p>
-                        <p class="mb-2 text-white">Compiling trajectory data...</p>
-                        <p class="mb-2">Processing...</p>
-                        <p class="mb-2 animate-pulse">_</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="projects" class="py-24 bg-panel-gray bg-[size:40px_40px] bg-grid-pattern border-t border-gray-800">
-            <div class="container mx-auto px-6">
-                <h2 class="text-3xl font-display font-bold text-center mb-16 uppercase tracking-widest">
-                    <i class="fas fa-code-branch text-neon-cyan mr-3"></i>Active Workstreams
+    <section id="manifesto" class="py-24 bg-deep-space relative">
+        <div class="container mx-auto px-6 grid md:grid-cols-2 gap-16 items-center">
+            <div>
+                <h2 class="text-4xl font-display font-bold text-white mb-8 border-l-4 border-neon-red pl-6">
+                    THE <span class="text-neon-red glow-red">SOLO</span> PARAMETER
                 </h2>
-                <div class="grid md:grid-cols-3 gap-8">
-                    <div onclick="enterStation()" class="interactive-project group relative bg-black border border-gray-800 p-8 hover:border-neon-cyan transition duration-300 cursor-pointer shadow-lg hover:shadow-neon-cyan/20">
-                        <div class="absolute top-0 right-0 bg-neon-cyan text-black text-xs font-mono px-2 py-1 font-bold animate-pulse">CLICK TO LAUNCH</div>
-                        <div class="text-neon-cyan text-4xl mb-6"><i class="fas fa-satellite-dish"></i></div>
-                        <h3 class="text-2xl font-display font-bold text-white mb-4 group-hover:text-neon-cyan">MAA_OPS Station</h3>
-                        <p class="text-gray-400 font-mono text-sm mb-6">
-                            Live orbital decay simulator and deep space network scanner interface. Click to initialize the control terminal.
-                        </p>
-                        <div class="w-full bg-gray-800 h-1 mt-4">
-                            <div class="bg-neon-cyan h-1 w-full shadow-[0_0_10px_#00f3ff]"></div>
-                        </div>
-                        <span class="text-xs font-mono text-neon-cyan mt-2 block">READY FOR DEPLOYMENT</span>
-                    </div>
-
-                    <div class="group relative bg-black border border-gray-800 p-8 hover:border-neon-cyan transition duration-300">
-                        <div class="absolute top-0 right-0 bg-gray-800 text-xs font-mono px-2 py-1 text-gray-400">PHASE: CONCEPT</div>
-                        <div class="text-neon-cyan text-4xl mb-6"><i class="fas fa-microchip"></i></div>
-                        <h3 class="text-2xl font-display font-bold text-white mb-4">Avionics Core</h3>
-                        <p class="text-gray-400 font-mono text-sm mb-6">
-                            Designing a custom Flight Computer using Arduino and Raspberry Pi. Sensor fusion for gyroscope, accelerometer, and barometer data.
-                        </p>
-                        <div class="w-full bg-gray-800 h-1 mt-4">
-                            <div class="bg-neon-cyan h-1 w-1/4 shadow-[0_0_10px_#00f3ff]"></div>
-                        </div>
-                        <span class="text-xs font-mono text-neon-cyan mt-2 block">25% COMPLETE</span>
-                    </div>
-
-                    <div class="group relative bg-black border border-gray-800 p-8 hover:border-neon-cyan transition duration-300">
-                        <div class="absolute top-0 right-0 bg-gray-800 text-xs font-mono px-2 py-1 text-gray-400">PHASE: RESEARCH</div>
-                        <div class="text-neon-cyan text-4xl mb-6"><i class="fas fa-satellite"></i></div>
-                        <h3 class="text-2xl font-display font-bold text-white mb-4">CubeSat Design</h3>
-                        <p class="text-gray-400 font-mono text-sm mb-6">
-                            Theoretical CAD modeling of a 1U CubeSat structure. Focus on thermal management and solar panel deployment mechanisms.
-                        </p>
-                        <div class="w-full bg-gray-800 h-1 mt-4">
-                            <div class="bg-neon-cyan h-1 w-1/2 shadow-[0_0_10px_#00f3ff]"></div>
-                        </div>
-                        <span class="text-xs font-mono text-neon-cyan mt-2 block">50% COMPLETE</span>
+                <div class="font-mono text-gray-400 space-y-6 leading-relaxed text-sm md:text-base text-justify">
+                    <p>
+                        <span class="text-neon-cyan">> INIT_STATEMENT:</span> 
+                        Space exploration is no longer the exclusive domain of superpowers and conglomerates. The tools of the trade—coding, simulation, 3D printing, and propulsion theory—are now in the hands of the individual.
+                    </p>
+                    <p>
+                        This is not a government agency. There is no board of directors. This is a private research initiative focused on orbital mechanics simulations, rocketry avionics, and theoretical mission planning.
+                    </p>
+                    <p>
+                        I am building the future from a single terminal. 
+                    </p>
+                    <div class="p-4 bg-gray-900 border border-gray-800 text-neon-cyan mt-6">
+                        "The best aerospace engineering is done when the only limit is your own imagination."
                     </div>
                 </div>
             </div>
-        </section>
-
-        <section class="py-12 bg-black border-y border-gray-800 overflow-hidden">
-            <div class="container mx-auto px-6">
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center font-mono text-gray-600 text-xs">
-                    <div class="border border-gray-800 p-4">
-                        <span class="block text-gray-400 text-lg mb-1">0.00</span> ORBITAL VELOCITY
-                    </div>
-                    <div class="border border-gray-800 p-4">
-                        <span class="block text-gray-400 text-lg mb-1">NOMINAL</span> ATMOSPHERIC PRESSURE
-                    </div>
-                    <div class="border border-gray-800 p-4">
-                        <span class="block text-gray-400 text-lg mb-1">OFFLINE</span> PROPULSION BUS
-                    </div>
-                    <div class="border border-gray-800 p-4">
-                        <span class="block text-neon-cyan text-lg mb-1 animate-pulse">ACTIVE</span> USER TERMINAL
-                    </div>
+            
+            <div class="bg-gray-900 p-2 rounded border border-gray-700 shadow-2xl shadow-neon-cyan/10">
+                <div class="bg-black p-6 font-mono text-xs md:text-sm h-80 overflow-y-auto text-green-500 rounded-sm">
+                    <p class="mb-2">user@horizon-lab:~$ ./init_sequence.sh</p>
+                    <p class="mb-2 text-white">Loading modules...</p>
+                    <p class="mb-2">[OK] Orbital Dynamics ...... LOADED</p>
+                    <p class="mb-2">[OK] Telemetry Systems ..... LOADED</p>
+                    <p class="mb-2">[OK] Coffee Machine ........ LOADED</p>
+                    <p class="mb-2 text-yellow-500">WARNING: Budget Critical (Self-Funded)</p>
+                    <p class="mb-2 text-white">Compiling trajectory data...</p>
+                    <p class="mb-2">Processing...</p>
+                    <p class="mb-2 animate-pulse">_</p>
                 </div>
             </div>
-        </section>
+        </div>
+    </section>
 
-        <footer class="bg-deep-space py-10 text-center">
-            <h2 class="font-display font-bold text-2xl text-white mb-4">MAA | PROJECT HORIZON</h2>
-            <p class="font-mono text-gray-500 text-sm mb-6">// IMAGINATION IS THE ULTIMATE PROPULSION //</p>
-            <div class="text-xs text-gray-700 max-w-lg mx-auto leading-relaxed">
-                <p class="mb-2">DISCLAIMER:</p>
-                <p>This is a personal independent research project. Not affiliated with any government space agency.</p>
+    <section id="projects" class="py-24 bg-panel-gray bg-[size:40px_40px] bg-grid-pattern border-t border-gray-800">
+        <div class="container mx-auto px-6">
+            <h2 class="text-3xl font-display font-bold text-center mb-16 uppercase tracking-widest">
+                <i class="fas fa-code-branch text-neon-cyan mr-3"></i>Active Workstreams
+            </h2>
+
+            <div class="grid md:grid-cols-3 gap-8">
+                
+                <div class="group relative bg-black border border-gray-800 p-8 hover:border-neon-cyan transition duration-300">
+                    <div class="absolute top-0 right-0 bg-gray-800 text-xs font-mono px-2 py-1 text-gray-400">PHASE: ALPHA</div>
+                    <div class="text-neon-cyan text-4xl mb-6"><i class="fas fa-laptop-code"></i></div>
+                    <h3 class="text-2xl font-display font-bold text-white mb-4">Sim-Earth</h3>
+                    <p class="text-gray-400 font-mono text-sm mb-6">
+                        Developing a custom Python-based orbital decay simulator. Calculating atmospheric drag on Low Earth Orbit (LEO) objects.
+                    </p>
+                    <div class="w-full bg-gray-800 h-1 mt-4">
+                        <div class="bg-neon-cyan h-1 w-3/4 shadow-[0_0_10px_#00f3ff]"></div>
+                    </div>
+                    <span class="text-xs font-mono text-neon-cyan mt-2 block">75% COMPLETE</span>
+                </div>
+
+                <div class="group relative bg-black border border-gray-800 p-8 hover:border-neon-cyan transition duration-300">
+                    <div class="absolute top-0 right-0 bg-gray-800 text-xs font-mono px-2 py-1 text-gray-400">PHASE: CONCEPT</div>
+                    <div class="text-neon-cyan text-4xl mb-6"><i class="fas fa-microchip"></i></div>
+                    <h3 class="text-2xl font-display font-bold text-white mb-4">Avionics Core</h3>
+                    <p class="text-gray-400 font-mono text-sm mb-6">
+                        Designing a custom Flight Computer using Arduino and Raspberry Pi. Sensor fusion for gyroscope, accelerometer, and barometer data.
+                    </p>
+                    <div class="w-full bg-gray-800 h-1 mt-4">
+                        <div class="bg-neon-cyan h-1 w-1/4 shadow-[0_0_10px_#00f3ff]"></div>
+                    </div>
+                    <span class="text-xs font-mono text-neon-cyan mt-2 block">25% COMPLETE</span>
+                </div>
+
+                <div class="group relative bg-black border border-gray-800 p-8 hover:border-neon-cyan transition duration-300">
+                    <div class="absolute top-0 right-0 bg-gray-800 text-xs font-mono px-2 py-1 text-gray-400">PHASE: RESEARCH</div>
+                    <div class="text-neon-cyan text-4xl mb-6"><i class="fas fa-satellite"></i></div>
+                    <h3 class="text-2xl font-display font-bold text-white mb-4">CubeSat Design</h3>
+                    <p class="text-gray-400 font-mono text-sm mb-6">
+                        Theoretical CAD modeling of a 1U CubeSat structure. Focus on thermal management and solar panel deployment mechanisms.
+                    </p>
+                    <div class="w-full bg-gray-800 h-1 mt-4">
+                        <div class="bg-neon-cyan h-1 w-1/2 shadow-[0_0_10px_#00f3ff]"></div>
+                    </div>
+                    <span class="text-xs font-mono text-neon-cyan mt-2 block">50% COMPLETE</span>
+                </div>
+
             </div>
-            <p class="mt-8 font-mono text-neon-cyan text-xs">CODED BY ONE HUMAN. &copy; 2026.</p>
-        </footer>
-    </div>
+        </div>
+    </section>
 
-    <div id="station-layer">
-        <div id="root"></div>
-    </div>
+    <section class="py-12 bg-black border-y border-gray-800 overflow-hidden">
+        <div class="container mx-auto px-6">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center font-mono text-gray-600 text-xs">
+                <div class="border border-gray-800 p-4">
+                    <span class="block text-gray-400 text-lg mb-1">0.00</span>
+                    ORBITAL VELOCITY
+                </div>
+                <div class="border border-gray-800 p-4">
+                    <span class="block text-gray-400 text-lg mb-1">NOMINAL</span>
+                    ATMOSPHERIC PRESSURE
+                </div>
+                <div class="border border-gray-800 p-4">
+                    <span class="block text-gray-400 text-lg mb-1">OFFLINE</span>
+                    PROPULSION BUS
+                </div>
+                <div class="border border-gray-800 p-4">
+                    <span class="block text-neon-cyan text-lg mb-1 animate-pulse">ACTIVE</span>
+                    USER TERMINAL
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-deep-space py-10 text-center">
+        <h2 class="font-display font-bold text-2xl text-white mb-4">PROJECT HORIZON</h2>
+        <p class="font-mono text-gray-500 text-sm mb-6">
+            // IMAGINATION IS THE ULTIMATE PROPULSION //
+        </p>
+        <div class="text-xs text-gray-700 max-w-lg mx-auto leading-relaxed">
+            <p class="mb-2">DISCLAIMER:</p>
+            <p>This is a personal independent research project. Not affiliated with any government space agency. All missions described are simulations, models, or theoretical concepts unless stated otherwise.</p>
+        </div>
+        <p class="mt-8 font-mono text-neon-cyan text-xs">
+            CODED BY ONE HUMAN. &copy; 2026.
+        </p>
+    </footer>
 
     <script>
-        // Randomize CPU stat on landing page
+        // Simple script to randomize the CPU number for effect
         setInterval(() => {
             const cpu = Math.floor(Math.random() * (45 - 10 + 1) + 10);
-            if(document.getElementById('cpu-stat')) {
-                document.getElementById('cpu-stat').innerText = cpu;
-            }
+            document.getElementById('cpu-stat').innerText = cpu;
         }, 2000);
-
-        // Function to switch views
-        function enterStation() {
-            const landing = document.getElementById('landing-layer');
-            const station = document.getElementById('station-layer');
-            
-            landing.style.opacity = '0';
-            landing.style.transition = 'opacity 0.5s ease';
-            
-            setTimeout(() => {
-                landing.style.display = 'none';
-                station.style.display = 'block';
-                window.dispatchEvent(new Event('resize'));
-            }, 500);
-        }
-    </script>
-
-    <script type="text/babel">
-        const { useState, useEffect, useRef } = React;
-
-        // --- INTERNAL ICON SYSTEM ---
-        const Icons = {
-            Radar: (props) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M19.07 4.93A10 10 0 0 0 6.99 3.34"/><path d="M4 6h.01"/><path d="M2.29 9.62A10 10 0 1 0 21.31 8.35"/><path d="M16.24 7.76A6 6 0 1 0 8.23 16.67"/><path d="M12 18h.01"/><path d="M17.99 11.66A6 6 0 0 1 15.77 16.67"/><circle cx="12" cy="12" r="2"/><path d="m13.41 10.59-5.66 5.66"/></svg>,
-            Moon: (props) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>,
-            Telescope: (props) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="m10.065 12.493-6.18 1.318a.934.934 0 0 1-1.108-.702l-.537-2.522a.934.934 0 0 1 .702-1.108l6.18-1.318a.934.934 0 0 1 1.108.702l.537 2.522a.934.934 0 0 1-.702 1.108Z"/><path d="M13.56 11.747l4.332-.924"/><path d="M16 21V6.5"/><path d="M9 21v-8.373"/><path d="M21.137 3.518L6.44 6.652a2 2 0 0 0-1.503 2.37l.453 2.126a2 2 0 0 0 2.37 1.503l14.697-3.134a2 2 0 0 0 1.503-2.37l-.453-2.126a2 2 0 0 0-2.37-1.503Z"/></svg>,
-            Activity: (props) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>,
-            Crosshair: (props) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><circle cx="12" cy="12" r="10"/><line x1="22" y1="12" x2="18" y2="12"/><line x1="6" y1="12" x2="2" y2="12"/><line x1="12" y1="6" x2="12" y2="2"/><line x1="12" y1="22" x2="12" y2="18"/></svg>,
-            Search: (props) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>,
-            ChevronRight: (props) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="m9 18 6-6-6-6"/></svg>,
-            Cpu: (props) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><path d="M15 2v2"/><path d="M15 20v2"/><path d="M2 15h2"/><path d="M2 9h2"/><path d="M20 15h2"/><path d="M20 9h2"/><path d="M9 2v2"/><path d="M9 20v2"/></svg>,
-            Volume2: (props) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>,
-            Shield: (props) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>,
-            Home: (props) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>,
-            Menu: (props) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>,
-            X: (props) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-        };
-
-        const App = () => {
-          const [activeTab, setActiveTab] = useState('lunar_link');
-          const [isConnected, setIsConnected] = useState(false);
-          const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-          const [logs, setLogs] = useState(["BOOT_SEQUENCE: OK", "INITIALIZING SPACE COMMAND...", "UPLINK_READY: STANDBY"]);
-          const [audioContext, setAudioContext] = useState(null);
-          const oscillatorRef = useRef(null);
-          
-          // Telescope Feed State
-          const [currentFeed, setCurrentFeed] = useState(null);
-          const [isScanning, setIsScanning] = useState(false);
-          const [scanProgress, setScanProgress] = useState(0);
-          const [scanIndex, setScanIndex] = useState(0);
-          const [isDistorted, setIsDistorted] = useState(false);
-
-          // DEEP SPACE DATABASE
-          const satelliteDb = [
-            { id: "JWST-NIR-01", name: "James Webb (NIRCam)", target: "Carina Nebula", freq: "25.4 GHz", url: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/03-NIRCAM_Image_of_the_Carina_Nebula.jpg/1280px-03-NIRCAM_Image_of_the_Carina_Nebula.jpg", desc: "Star formation detection in NGC 3324." },
-            { id: "HST-VIS-09", name: "Hubble Space", target: "Pillars of Creation", freq: "12.8 GHz", url: "https://upload.wikimedia.org/wikipedia/commons/b/b2/Eagle_Nebula_Pillars_of_Creation.jpg", desc: "M16 interstellar gas columns analysis." },
-            { id: "JWST-MIRI-07", name: "James Webb (MIRI)", target: "Stephan's Quintet", freq: "26.1 GHz", url: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/63/Stephan%27s_Quintet_NIRCam_and_MIRI_Imaging.jpg/1024px-Stephan%27s_Quintet_NIRCam_and_MIRI_Imaging.jpg", desc: "Shockwaves in galactic interactions." },
-            { id: "ESA-EUCLID-B", name: "ESA Euclid", target: "Perseus Cluster", freq: "18.5 GHz", url: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Euclid_first_images_-_Perseus_Cluster_%283%29.jpg/1280px-Euclid_first_images_-_Perseus_Cluster_%283%29.jpg", desc: "Dark matter distribution mapping." },
-            { id: "EHT-BLK-M87", name: "EHT Network", target: "M87 Black Hole", freq: "230 GHz", url: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/Black_hole_-_Messier_87_crop_max_res.jpg/1024px-Black_hole_-_Messier_87_crop_max_res.jpg", desc: "Event horizon shadow visualization." },
-            { id: "JAXA-AKARI-IR", name: "JAXA Akari", target: "Magellanic Cloud", freq: "32 GHz", url: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/92/LMC_Akari.jpg/1024px-LMC_Akari.jpg", desc: "IR survey of satellite galaxies." },
-            { id: "JWST-DEEP-42", name: "James Webb (Deep Field)", target: "SMACS 0723", freq: "25.9 GHz", url: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/22/Main_image_deep_field_smacs0723-5MB.jpg/1280px-Main_image_deep_field_smacs0723-5MB.jpg", desc: "Deep field infrared survey." },
-            { id: "ESA-HER-M31", name: "Herschel Space", target: "Andromeda Center", freq: "155 GHz", url: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c2/M31_the_Andromeda_Galaxy_NOW.jpg/1280px-M31_the_Andromeda_Galaxy_NOW.jpg", desc: "M31 cosmic dust lanes." },
-            { id: "JAXA-SUZ-X", name: "JAXA Suzaku", target: "Crab Nebula", freq: "X-Ray", url: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/00/Crab_Nebula.jpg/1280px-Crab_Nebula.jpg", desc: "Supernova remnant wind analysis." }
-          ];
-
-          // Moon Data
-          const [moonData, setMoonData] = useState({ phase: 0, illumination: 0, distance: 384400, name: 'Calibrating...' });
-
-          const calculateMoonPhase = () => {
-            const synodic = 29.53058867;
-            const baseDate = new Date('2000-01-06T18:14:00Z');
-            const diff = (new Date().getTime() - baseDate.getTime()) / (1000 * 60 * 60 * 24);
-            const currentCycle = (diff / synodic) % 1;
-            const illumination = (1 - Math.abs(currentCycle - 0.5) * 2) * 100;
-            
-            let name = 'New Moon';
-            if (currentCycle < 0.05) name = 'New Moon';
-            else if (currentCycle < 0.22) name = 'Waxing Crescent';
-            else if (currentCycle < 0.28) name = 'First Quarter';
-            else if (currentCycle < 0.47) name = 'Waxing Gibbous';
-            else if (currentCycle < 0.53) name = 'Full Moon';
-            else if (currentCycle < 0.72) name = 'Waning Gibbous';
-            else if (currentCycle < 0.78) name = 'Last Quarter';
-            else name = 'Waning Crescent';
-
-            setMoonData({
-              phase: currentCycle,
-              illumination: illumination,
-              distance: 384400 + (Math.sin(currentCycle * Math.PI * 2) * 21000),
-              name: name
-            });
-          };
-
-          useEffect(() => {
-            calculateMoonPhase();
-            const interval = setInterval(calculateMoonPhase, 10000);
-            return () => clearInterval(interval);
-          }, []);
-
-          const findWorkingFeed = (startIndex) => {
-            setIsScanning(true);
-            setCurrentFeed(null);
-            setScanProgress(0);
-            addLog(`SCAN_INIT: Sector sweep initiated from node ${startIndex}...`);
-
-            let checkIndex = startIndex;
-            
-            const runScan = () => {
-              const satellite = satelliteDb[checkIndex % satelliteDb.length];
-              const quality = Math.random();
-
-              if (quality < 0.3) {
-                addLog(`SIGNAL_LOST: ${satellite.id} - Rerouting...`);
-                checkIndex++;
-                setTimeout(runScan, 300);
-              } else {
-                const lockInterval = setInterval(() => {
-                  setScanProgress(prev => {
-                    if (prev >= 100) {
-                      clearInterval(lockInterval);
-                      addLog(`SIGNAL_LOCKED: Downlink established with ${satellite.id}`);
-                      setIsDistorted(true);
-                      setCurrentFeed(satellite);
-                      setIsScanning(false);
-                      setScanIndex(checkIndex + 1);
-                      setTimeout(() => setIsDistorted(false), 800);
-                      return 100;
-                    }
-                    return prev + 25;
-                  });
-                }, 120);
-              }
-            };
-            runScan();
-          };
-
-          const handleImageError = () => {
-            addLog(`SYNC_FAIL: Data packet loss for ${currentFeed?.id}.`);
-            findWorkingFeed(scanIndex);
-          };
-
-          const addLog = (msg) => {
-            setLogs(prev => [`> ${new Date().toLocaleTimeString('en-GB')} : ${msg}`, ...prev].slice(0, 40));
-          };
-
-          const toggleConnection = () => {
-            if (isConnected) {
-              setIsConnected(false);
-              addLog("COMMS: Satellite Link Severed.");
-              setCurrentFeed(null);
-              if (audioContext) stopAudio();
-            } else {
-              setIsConnected(true);
-              addLog("COMMS: Secure Uplink Established.");
-              if (activeTab === 'telescope') findWorkingFeed(0);
-            }
-          };
-
-          const startAudio = () => {
-            if (!isConnected || audioContext) return;
-            try {
-              const ctx = new (window.AudioContext || window.webkitAudioContext)();
-              const osc = ctx.createOscillator();
-              const gainNode = ctx.createGain();
-              osc.type = 'sine';
-              osc.frequency.setValueAtTime(1000, ctx.currentTime);
-              gainNode.gain.setValueAtTime(0.03, ctx.currentTime);
-              osc.connect(gainNode);
-              gainNode.connect(ctx.destination);
-              osc.start();
-              setAudioContext(ctx);
-              oscillatorRef.current = osc;
-              addLog("AUDIO: Frequency injection active (1.0kHz).");
-            } catch (e) { addLog("AUDIO_ERR: Hardware denied."); }
-          };
-
-          const stopAudio = () => {
-            if (oscillatorRef.current) {
-              oscillatorRef.current.stop();
-              oscillatorRef.current = null;
-            }
-            if (audioContext) {
-              audioContext.close();
-              setAudioContext(null);
-            }
-            addLog("AUDIO: Transmission terminated.");
-          };
-
-          const exitStation = () => {
-              const landing = document.getElementById('landing-layer');
-              const station = document.getElementById('station-layer');
-              station.style.display = 'none';
-              landing.style.display = 'block';
-              setTimeout(() => { landing.style.opacity = '1'; }, 50);
-          }
-
-          const NavButton = ({ id, icon: Icon, label }) => (
-            <button
-              onClick={() => {
-                setActiveTab(id);
-                if (id === 'telescope' && isConnected && !currentFeed && !isScanning) findWorkingFeed(scanIndex);
-                setIsMobileMenuOpen(false); // Close menu on selection
-              }}
-              className={`flex flex-col md:flex-row items-center md:space-x-3 w-full p-3 rounded-md transition-all font-tech tracking-wider text-left ${
-                activeTab === id ? 'bg-blue-900/30 text-blue-400 border border-blue-500/50 shadow-[0_0_10px_rgba(59,130,246,0.2)]' : 'text-slate-500 hover:bg-white/5 hover:text-slate-300'
-              }`}
-            >
-              {Icon && <Icon size={18} className={activeTab === id ? "animate-pulse" : ""} />}
-              <span className="text-xs md:text-xs mt-1 md:mt-0 font-bold">{label}</span>
-            </button>
-          );
-
-          return (
-            <div className="flex h-screen bg-[#010102] text-slate-300 font-sans overflow-hidden relative">
-              
-              {/* Mobile Header Bar */}
-              <div className="md:hidden absolute top-0 left-0 w-full z-50 bg-[#050508] border-b border-white/5 p-4 flex justify-between items-center">
-                 <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 bg-blue-600/20 border border-blue-500/30 rounded flex items-center justify-center">
-                       <Icons.Radar className="text-blue-500" size={18} />
-                    </div>
-                    <h1 className="font-ui font-bold text-white text-sm tracking-[0.2em]">MAA_OPS</h1>
-                 </div>
-                 <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="text-white">
-                    {isMobileMenuOpen ? <Icons.X /> : <Icons.Menu />}
-                 </button>
-              </div>
-
-              {/* Sidebar (Responsive) */}
-              <aside className={`
-                  fixed inset-y-0 left-0 z-40 w-64 bg-[#050508] border-r border-white/5 transform transition-transform duration-300 ease-in-out md:relative md:translate-x-0 flex flex-col justify-between shrink-0
-                  ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}
-              `}>
-                <div className="p-6 hidden md:flex items-center gap-3 border-b border-white/5">
-                  <div className="w-8 h-8 bg-blue-600/20 border border-blue-500/30 rounded flex items-center justify-center">
-                    <Icons.Radar className="text-blue-500" size={18} />
-                  </div>
-                  <div>
-                    <h1 className="font-ui font-bold text-white text-sm tracking-[0.2em]">MAA_OPS</h1>
-                    <p className="text-[9px] text-slate-600 font-tech uppercase">Control Station</p>
-                  </div>
-                </div>
-
-                <nav className="flex-1 p-4 flex flex-col gap-2 mt-16 md:mt-0">
-                  <NavButton id="lunar_link" icon={Icons.Moon} label="LUNAR_ARRAY" />
-                  <NavButton id="telescope" icon={Icons.Telescope} label="DEEP_SKY_SCAN" />
-                  <NavButton id="telemetry" icon={Icons.Activity} label="SYSTEM_HEALTH" />
-                </nav>
-
-                <div className="p-4 space-y-2">
-                  <button 
-                    onClick={toggleConnection}
-                    className={`w-full py-2 rounded-sm text-[10px] font-tech font-bold tracking-widest transition-all ${
-                      isConnected ? 'bg-red-500/10 text-red-500 border border-red-500/30' : 'bg-blue-600 text-white shadow-lg shadow-blue-500/20'
-                    }`}
-                  >
-                    {isConnected ? 'HALT_LINK' : 'INITIALIZE_LINK'}
-                  </button>
-                  <button onClick={exitStation} className="w-full py-2 text-[10px] text-slate-600 hover:text-white font-tech uppercase border border-transparent hover:border-white/10">
-                     <span className="flex items-center justify-center gap-2"><Icons.Home size={10}/> Exit Terminal</span>
-                  </button>
-                </div>
-              </aside>
-
-              {/* Mobile Overlay Backdrop */}
-              {isMobileMenuOpen && (
-                <div 
-                    className="fixed inset-0 bg-black/80 z-30 md:hidden"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                ></div>
-              )}
-
-              {/* Main Display */}
-              <main className="flex-1 relative flex flex-col bg-black overflow-hidden pt-16 md:pt-0">
-                <div className="absolute inset-0 crt-overlay opacity-40 z-50 pointer-events-none"></div>
-                
-                <div className="relative z-10 flex-1 p-4 md:p-6 overflow-y-auto">
-                  {/* HUD Header */}
-                  <div className="flex justify-between items-center mb-6 border-b border-white/5 pb-3">
-                    <div className="flex flex-col">
-                      <span className="text-[10px] font-tech text-slate-500 uppercase">Mission Status</span>
-                      <div className="flex items-center gap-2">
-                          <div className={`w-2 h-2 rounded-full ${isConnected ? 'bg-green-500 animate-pulse' : 'bg-red-600'}`}></div>
-                          <span className="font-tech text-xs text-white uppercase tracking-tighter">
-                           {activeTab.replace('_', ' ')} :: {isConnected ? 'Active' : 'Offline'}
-                          </span>
-                      </div>
-                    </div>
-                    
-                    <div className="hidden md:block text-right font-tech text-[10px] text-slate-500 uppercase">
-                       Sector_X: 42.0 // Node: 99<br/>
-                       Time: {new Date().toLocaleTimeString()}
-                    </div>
-                  </div>
-
-                  {/* LUNAR ARRAY TAB */}
-                  {activeTab === 'lunar_link' && (
-                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 animate-fade-in">
-                      <div className="lg:col-span-8">
-                        <div className="bg-[#0a0a0c] border border-white/10 p-1 relative overflow-hidden">
-                           <div className="aspect-square md:aspect-video bg-black flex items-center justify-center relative overflow-hidden">
-                             {!isConnected ? (
-                               <div className="text-center space-y-4 opacity-40">
-                                  <Icons.Moon size={60} strokeWidth={1}/>
-                                  <p className="font-tech text-xs tracking-[0.3em]">ENCRYPTED_DOWNLINK</p>
-                               </div>
-                             ) : (
-                               <>
-                                  <div className="absolute top-4 left-4 z-20 font-tech text-[10px] text-blue-400 bg-black/70 p-2 border border-blue-500/30">
-                                     LRO (LUNAR RECONNAISSANCE ORBITER)<br/>
-                                     PHASE_NAME: {moonData.name.toUpperCase()}
-                                  </div>
-                                  <div className="relative w-64 h-64 md:w-96 md:h-96 rounded-full overflow-hidden shadow-[0_0_80px_rgba(255,255,255,0.05)] border border-white/5">
-                                     <img 
-                                       src="https://upload.wikimedia.org/wikipedia/commons/e/e1/FullMoon2010.jpg" 
-                                       alt="Moon Texture" 
-                                       className="w-full h-full object-cover filter grayscale contrast-125 opacity-80"
-                                     />
-                                     <div className="absolute inset-0 bg-black/90 blur-3xl transition-transform duration-[2000ms]"
-                                       style={{ transform: `translateX(${(moonData.phase - 0.5) * 200}%)` }}></div>
-                                  </div>
-                               </>
-                             )}
-                             <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent,black)] pointer-events-none"></div>
-                             <Icons.Crosshair className="absolute text-white/10 w-full h-full p-10 pointer-events-none" strokeWidth={0.5} />
-                           </div>
-                        </div>
-                      </div>
-
-                      <div className="lg:col-span-4 flex flex-col gap-4">
-                          <div className="bg-[#0a0a0c] border border-white/10 p-5 rounded-sm shadow-inner">
-                             <h3 className="text-xs font-tech text-slate-500 mb-4 tracking-widest uppercase border-b border-white/5 pb-2">Moon Telemetry</h3>
-                             <div className="space-y-6">
-                                <div>
-                                   <p className="text-[10px] text-blue-500 font-tech uppercase mb-1">Illumination</p>
-                                   <div className="flex items-end gap-2">
-                                      <span className="text-3xl text-white font-ui">{isConnected ? moonData.illumination.toFixed(1) : '0.0'}</span>
-                                      <span className="text-xs text-slate-600 font-tech mb-1">%</span>
-                                   </div>
-                                </div>
-                                <div>
-                                   <p className="text-[10px] text-blue-500 font-tech uppercase mb-1">Orbital Distance</p>
-                                   <div className="flex items-end gap-2">
-                                      <span className="text-2xl text-white font-ui">{isConnected ? Math.round(moonData.distance).toLocaleString() : '---,---'}</span>
-                                      <span className="text-[10px] text-slate-600 font-tech mb-1">KM</span>
-                                   </div>
-                                </div>
-                             </div>
-                          </div>
-                          <div className="bg-[#0a0a0c] border border-white/10 p-4 flex-1 font-tech text-[10px] overflow-hidden flex flex-col">
-                             <span className="text-green-500 mb-2 border-b border-green-500/20 pb-1">COMMS_LOG_STREAM</span>
-                             <div className="flex-1 overflow-y-auto space-y-1 opacity-80 scrollbar-hide">
-                                {logs.map((log, i) => <div key={i} className="whitespace-nowrap overflow-hidden text-ellipsis">{log}</div>)}
-                             </div>
-                          </div>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* DSN Scanner (Telescope) Tab */}
-                  {activeTab === 'telescope' && (
-                    <div className="max-w-6xl mx-auto animate-fade-in">
-                      {!isConnected ? (
-                        <div className="h-[70vh] flex flex-col items-center justify-center border border-dashed border-white/10 rounded">
-                           <Icons.Telescope size={48} className="text-slate-800 mb-4" />
-                           <p className="font-tech text-xs tracking-widest text-slate-600 uppercase">Standby for signal authorization...</p>
-                        </div>
-                      ) : (
-                        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-                           <div className="lg:col-span-9 relative">
-                              {isScanning ? (
-                                <div className="h-[60vh] bg-[#050508] border border-white/10 flex flex-col items-center justify-center relative overflow-hidden">
-                                   <div className="w-full absolute top-0 left-0 h-1 bg-blue-500/20 shadow-[0_0_20px_blue] animate-[scan_1.2s_infinite]"></div>
-                                   <Icons.Search className="text-blue-500 mb-4 animate-ping" size={40} />
-                                   <span className="text-white font-tech text-sm tracking-[0.5em] mb-4 uppercase">Searching Deep Sky...</span>
-                                   <div className="w-64 h-1 bg-slate-900 rounded-full overflow-hidden border border-white/5">
-                                      <div className="h-full bg-blue-600 transition-all" style={{width: `${scanProgress}%`}}></div>
-                                   </div>
-                                   <p className="text-[10px] font-tech text-slate-600 mt-4 uppercase">Analyzing Sector Node {scanIndex}...</p>
-                                </div>
-                              ) : currentFeed ? (
-                                <div className="bg-[#0a0a0c] border border-white/10 p-1 relative overflow-hidden group">
-                                   <div className="absolute top-4 left-4 z-20 font-tech text-[10px] text-blue-400 bg-black/70 p-2 border border-blue-500/30">
-                                      LOCKED FEED // ID: {currentFeed.id}<br/>
-                                      TARGET: {currentFeed.target.toUpperCase()}
-                                   </div>
-                                   <img 
-                                     src={currentFeed.url} 
-                                     alt={currentFeed.target} 
-                                     onError={handleImageError}
-                                     className={`w-full h-auto object-contain max-h-[75vh] filter contrast-125 ${isDistorted ? 'distortion' : ''}`}
-                                   />
-                                   <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black via-black/40 to-transparent">
-                                      <h2 className="text-3xl text-white font-ui font-bold uppercase tracking-tight">{currentFeed.target}</h2>
-                                   </div>
-                                   
-                                   <button 
-                                     onClick={() => findWorkingFeed(scanIndex)}
-                                     className="absolute right-6 top-1/2 -translate-y-1/2 w-14 h-14 bg-blue-600/90 rounded-full flex items-center justify-center text-white border border-white/20 hover:scale-110 transition-all opacity-0 group-hover:opacity-100 z-30"
-                                     title="Scan Next Frequency"
-                                   >
-                                     <div className="flex flex-col items-center">
-                                        <Icons.ChevronRight size={32} />
-                                        <span className="text-[8px] font-tech font-bold uppercase -mt-1">Next</span>
-                                     </div>
-                                   </button>
-                                </div>
-                              ) : null}
-                           </div>
-                           
-                           <div className="lg:col-span-3 space-y-4">
-                              {currentFeed && !isScanning && (
-                                 <div className="bg-[#0a0a0c] border border-white/10 p-5 rounded-sm">
-                                    <h3 className="text-xs font-tech text-slate-500 mb-3 uppercase tracking-widest border-b border-white/5 pb-2">Analysis Packet</h3>
-                                    <div className="space-y-4 font-tech text-[10px]">
-                                       <div>
-                                          <p className="text-slate-600 uppercase">Origin Network</p>
-                                          <p className="text-white font-bold">{currentFeed.name}</p>
-                                       </div>
-                                       <div>
-                                          <p className="text-slate-600 uppercase">Frequency</p>
-                                          <p className="text-blue-400">{currentFeed.freq}</p>
-                                       </div>
-                                       <div>
-                                          <p className="text-slate-600 uppercase">Description</p>
-                                          <p className="text-slate-400 leading-relaxed italic">"{currentFeed.desc}"</p>
-                                       </div>
-                                    </div>
-                                 </div>
-                              )}
-                              <div className="bg-[#050508] border border-white/10 p-4 rounded-sm flex-1 font-tech">
-                                 <span className="text-[10px] text-slate-600 block mb-2 uppercase tracking-widest">Hex Stream Data</span>
-                                 <div className="h-40 overflow-hidden text-[9px] text-green-700 opacity-60">
-                                    {[1,2,3,4,5,6,7,8,9,10].map(i => (
-                                       <div key={i}>0x{Math.random().toString(16).substr(2, 24).toUpperCase()}</div>
-                                    ))}
-                                 </div>
-                              </div>
-                           </div>
-                        </div>
-                      )}
-                    </div>
-                  )}
-
-                  {/* Telemetry Health Tab */}
-                  {activeTab === 'telemetry' && (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-fade-in">
-                      <div className="bg-[#0a0a0c] border border-white/10 p-6 rounded-sm">
-                         <h3 className="font-ui font-bold text-white text-sm mb-6 tracking-widest uppercase flex items-center gap-2">
-                            <Icons.Cpu size={16} className="text-blue-500"/> Core_Diagnostics
-                         </h3>
-                         <div className="space-y-4 font-tech text-[11px]">
-                            <div className="flex justify-between border-b border-white/5 pb-2"><span className="text-slate-500 uppercase">Uptime</span><span className="text-white">821:40:12:05</span></div>
-                            <div className="flex justify-between border-b border-white/5 pb-2"><span className="text-slate-500 uppercase">Packet_Loss</span><span className="text-green-500">0.00%</span></div>
-                            <div className="flex justify-between border-b border-white/5 pb-2"><span className="text-slate-500 uppercase">Relay_Shield</span><span className="text-blue-400">NOMINAL</span></div>
-                         </div>
-                         
-                         <button 
-                           onClick={() => audioContext ? stopAudio() : startAudio()}
-                           disabled={!isConnected}
-                           className={`mt-8 w-full py-3 rounded-sm font-tech text-[10px] font-bold tracking-widest flex items-center justify-center gap-2 transition-all ${
-                             audioContext ? 'bg-red-600 text-white animate-pulse' : 'bg-white/5 text-slate-300'
-                           }`}
-                         >
-                            <Icons.Volume2 size={14}/> {audioContext ? 'HALT_AUDIO_TEST' : 'START_AUDIO_TEST'}
-                         </button>
-                      </div>
-
-                      <div className="bg-[#0a0a0c] border border-white/10 p-6 rounded-sm flex items-center justify-center flex-col text-center">
-                         <div className="w-20 h-20 border-2 border-blue-500/10 rounded-full flex items-center justify-center relative mb-4">
-                            <Icons.Shield size={32} className="text-blue-900 animate-pulse" />
-                            <div className="absolute inset-0 border-t-2 border-blue-500 rounded-full animate-spin"></div>
-                         </div>
-                         <p className="font-tech text-[10px] text-slate-500 uppercase tracking-widest">DSN Connectivity</p>
-                         <h2 className="text-3xl text-white font-ui font-bold tracking-tighter uppercase">Ultra_Wide</h2>
-                      </div>
-                    </div>
-                  )}
-                </div>
-
-                {/* Global Glitch Filter */}
-                <svg className="hidden">
-                    <filter id="noise">
-                       <feTurbulence type="fractalNoise" baseFrequency="0.75" numOctaves="4" stitchTiles="stitch" />
-                       <feDisplacementMap in="SourceGraphic" scale="4" />
-                    </filter>
-                </svg>
-              </main>
-            </div>
-          );
-        };
-
-        const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(<App />);
     </script>
 </body>
 </html>
