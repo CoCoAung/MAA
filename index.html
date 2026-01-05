@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MAA_OPS | Independent Space Command</title>
+    <title>HORIZON | Solo Aerospace Initiative</title>
     
     <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
@@ -12,297 +12,256 @@
     <script src="https://unpkg.com/lucide@latest"></script>
 
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@500;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Rajdhani:wght@500;700&display=swap');
         
-        :root {
-            --neon-blue: #3b82f6;
-        }
-
-        body {
-            background-color: #010102;
-            margin: 0;
-            overflow: hidden;
-            color: #cbd5e1;
-        }
-
+        :root { --neon-blue: #00f3ff; --neon-red: #ff003c; }
+        body { background-color: #050505; color: #e5e5e5; margin: 0; font-family: 'Rajdhani', sans-serif; overflow-x: hidden; }
+        
+        .font-display { font-family: 'Orbitron', sans-serif; }
         .font-tech { font-family: 'Share Tech Mono', monospace; }
-        .font-ui { font-family: 'Rajdhani', sans-serif; }
-
-        /* CRT Overlay Effect */
-        .crt-overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.15) 50%), 
-                        linear-gradient(90deg, rgba(255, 0, 0, 0.05), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.05));
-            background-size: 100% 2px, 3px 100%;
-            pointer-events: none;
-            z-index: 100;
-            opacity: 0.3;
-        }
-
-        /* Scanline Animation */
-        @keyframes scan { 
-            0% { top: 0%; opacity: 0; } 
-            10% { opacity: 1; } 
-            90% { opacity: 1; } 
-            100% { top: 100%; opacity: 0; } 
-        }
-        .scanner-line {
-            position: absolute;
-            width: 100%;
-            height: 2px;
-            background: var(--neon-blue);
-            box-shadow: 0 0 15px var(--neon-blue);
-            animation: scan 2s linear infinite;
-        }
-
-        /* Glitch Animation */
-        @keyframes glitch {
-            0% { transform: translate(1px, 1px); }
-            50% { transform: translate(-2px, -1px); }
-            100% { transform: translate(0, 0); }
-        }
-        .distortion { animation: glitch 0.3s infinite; filter: hue-rotate(90deg); }
-
-        .scrollbar-hide::-webkit-scrollbar { display: none; }
         
-        .fade-in { animation: fadeIn 0.5s ease-out forwards; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        /* CRT & Scanline Effects */
+        .crt::before {
+            content: " "; display: block; position: fixed; top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
+            z-index: 999; pointer-events: none; background-size: 100% 3px, 3px 100%; opacity: 0.3;
+        }
+
+        .hero-glow { text-shadow: 0 0 20px rgba(0, 243, 255, 0.5); }
+        
+        /* Smooth Page Transitions */
+        .fade-enter { opacity: 0; transform: translateY(10px); }
+        .fade-enter-active { opacity: 1; transform: translateY(0); transition: all 0.5s ease; }
+
+        .scanline-ui {
+            width: 100%; height: 2px; background: var(--neon-blue);
+            position: absolute; animation: scanMove 3s linear infinite;
+            box-shadow: 0 0 10px var(--neon-blue); z-index: 10;
+        }
+        @keyframes scanMove { 0% { top: 0%; } 100% { top: 100%; } }
+        
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
     </style>
 </head>
-<body>
+<body class="crt">
     <div id="root"></div>
 
     <script type="text/babel">
         const { useState, useEffect, useRef } = React;
-        
-        // Define Icons from Lucide (UMD version)
         const { 
-            Moon, Telescope, Activity, Radar, Cpu, Shield, 
-            Volume2, ChevronRight, Search, Crosshair, 
-            Lock, Wifi, Power
+            Rocket, Radio, Activity, Telescope, Globe, Moon, 
+            Shield, Cpu, Radar, ChevronRight, Search, Crosshair, 
+            Terminal, Zap, Signal, Power, XCircle
         } = lucide;
 
         const App = () => {
-            const [isAuthorized, setIsAuthorized] = useState(false);
+            const [view, setView] = useState('landing'); // 'landing' or 'dashboard'
+            const [isBooting, setIsBooting] = useState(false);
             const [activeTab, setActiveTab] = useState('lunar_link');
             const [isConnected, setIsConnected] = useState(false);
-            const [logs, setLogs] = useState(["BOOT_SEQUENCE: OK", "INITIALIZING SPACE COMMAND...", "UPLINK_READY: STANDBY"]);
-            const [audioContext, setAudioContext] = useState(null);
-            const oscillatorRef = useRef(null);
-
-            // Telescope Feed State
-            const [currentFeed, setCurrentFeed] = useState(null);
+            const [logs, setLogs] = useState(["> SYSTEM_READY", "> ENCRYPTION_ACTIVE"]);
+            
+            // Project 3 logic state
+            const [moonData, setMoonData] = useState({ phase: 0, illumination: 0, distance: 384400, name: 'CALIBRATING' });
             const [isScanning, setIsScanning] = useState(false);
-            const [scanProgress, setScanProgress] = useState(0);
-            const [scanIndex, setScanIndex] = useState(0);
-            const [isDistorted, setIsDistorted] = useState(false);
+            const [currentFeed, setCurrentFeed] = useState(null);
 
-            // Database
-            const satelliteDb = [
-                { id: "JWST-NIR-01", name: "James Webb", target: "Carina Nebula", freq: "25.4 GHz", url: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/03-NIRCAM_Image_of_the_Carina_Nebula.jpg/1280px-03-NIRCAM_Image_of_the_Carina_Nebula.jpg", desc: "Star formation detection." },
-                { id: "HST-VIS-09", name: "Hubble", target: "Pillars of Creation", freq: "12.8 GHz", url: "https://upload.wikimedia.org/wikipedia/commons/b/b2/Eagle_Nebula_Pillars_of_Creation.jpg", desc: "M16 interstellar gas columns." },
-                { id: "EHT-BLK-M87", name: "EHT Network", target: "M87 Black Hole", freq: "230 GHz", url: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/Black_hole_-_Messier_87_crop_max_res.jpg/1024px-Black_hole_-_Messier_87_crop_max_res.jpg", desc: "Event horizon shadow." }
-            ];
-
-            const [moonData, setMoonData] = useState({ phase: 0, illumination: 0, distance: 384400, name: 'Calibrating...' });
-
-            const calculateMoonPhase = () => {
-                const synodic = 29.53058867;
-                const baseDate = new Date('2000-01-06T18:14:00Z');
-                const diff = (new Date().getTime() - baseDate.getTime()) / (1000 * 60 * 60 * 24);
-                const currentCycle = (diff / synodic) % 1;
-                const illumination = (1 - Math.abs(currentCycle - 0.5) * 2) * 100;
-                setMoonData({
-                    phase: currentCycle,
-                    illumination: illumination,
-                    distance: 384400 + (Math.sin(currentCycle * Math.PI * 2) * 21000),
-                    name: illumination > 98 ? 'Full Moon' : illumination < 2 ? 'New Moon' : 'Orbital Phase Active'
-                });
-            };
-
-            useEffect(() => {
-                calculateMoonPhase();
-                const interval = setInterval(calculateMoonPhase, 10000);
-                return () => clearInterval(interval);
-            }, []);
-
-            const addLog = (msg) => {
-                setLogs(prev => [`> ${new Date().toLocaleTimeString('en-GB')} : ${msg}`, ...prev].slice(0, 20));
-            };
-
-            const toggleConnection = () => {
-                if (isConnected) {
-                    setIsConnected(false);
-                    addLog("COMMS: Link Severed.");
-                    setCurrentFeed(null);
-                } else {
-                    setIsConnected(true);
-                    addLog("COMMS: Secure Uplink Established.");
-                }
-            };
-
-            const findWorkingFeed = () => {
-                setIsScanning(true);
-                setScanProgress(0);
-                let p = 0;
-                const interval = setInterval(() => {
-                    p += 10;
-                    setScanProgress(p);
-                    if (p >= 100) {
-                        clearInterval(interval);
-                        setIsScanning(false);
-                        setCurrentFeed(satelliteDb[Math.floor(Math.random() * satelliteDb.length)]);
-                        addLog("DATA: Packet Received.");
-                    }
-                }, 150);
-            };
-
-            // Authentication Layer
-            if (!isAuthorized) {
-                return (
-                    <div className="h-screen bg-black flex flex-col items-center justify-center font-mono p-4 fade-in">
-                        <div className="w-full max-w-md border border-blue-900/30 p-8 bg-blue-950/5 relative overflow-hidden text-center">
-                            <Shield className="mx-auto mb-4 text-blue-500 animate-pulse" size={40} />
-                            <h2 className="text-blue-500 text-sm mb-6 tracking-[0.2em] font-bold">PRIVATE ACCESS PORTAL</h2>
-                            <div className="space-y-2 mb-8 text-left border-l border-blue-900 pl-4">
-                                <p className="text-blue-800 text-[10px]">ID: SOLO_COMMAND_03</p>
-                                <p className="text-blue-800 text-[10px]">CLASS: INDEPENDENT_ENGINEER</p>
-                            </div>
-                            <button 
-                                onClick={() => setIsAuthorized(true)}
-                                className="w-full border border-blue-500 py-3 text-blue-400 hover:bg-blue-500 hover:text-black transition-all font-bold tracking-[0.3em] text-xs"
-                            >
-                                START_AUTHENTICATION
-                            </button>
+            // --- Landing Page View ---
+            const LandingPage = () => (
+                <div className="min-h-screen flex flex-col">
+                    {/* Header */}
+                    <nav className="p-6 flex justify-between items-center border-b border-white/5 bg-black/50 backdrop-blur-md sticky top-0 z-50">
+                        <div className="flex items-center gap-3">
+                            <Rocket className="text-cyan-400" />
+                            <span className="font-display font-black tracking-tighter text-xl">PROJECT_HORIZON</span>
                         </div>
-                    </div>
-                );
-            }
+                        <div className="font-tech text-xs text-cyan-500 animate-pulse">SOLO_INITIATIVE v3.0</div>
+                    </nav>
 
-            return (
-                <div className="flex flex-col md:flex-row h-screen bg-[#010102] text-slate-400 font-ui overflow-hidden fade-in">
-                    <div className="crt-overlay"></div>
-                    
-                    {/* Sidebar */}
-                    <aside className="md:w-64 border-r border-white/5 bg-[#050508] flex flex-col z-30">
-                        <div className="p-6 border-b border-white/5 flex items-center gap-3">
-                            <Radar className="text-blue-500" size={20} />
-                            <div>
-                                <h1 className="font-bold text-white text-sm tracking-widest">MAA_OPS</h1>
-                                <p className="text-[9px] text-slate-600 font-tech">NODE_3: PRIVATE</p>
+                    {/* Hero Section */}
+                    <section className="flex-1 flex flex-col justify-center items-center px-6 py-20 text-center relative overflow-hidden">
+                        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,#111_0%,#000_100%)]"></div>
+                        <div className="relative z-10">
+                            <h2 className="font-tech text-cyan-500 tracking-[0.4em] mb-4 text-sm">BEYOND THE BUREAUCRACY</h2>
+                            <h1 className="text-6xl md:text-8xl font-display font-black mb-8 hero-glow leading-none">THE SOLO<br/><span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-600">FRONTIER</span></h1>
+                            <p className="max-w-xl mx-auto text-gray-400 font-tech text-sm md:text-base mb-12 border-l border-cyan-500 pl-4">
+                                Personal aerospace development and deep-space telemetry simulation. Built, coded, and operated by a single human.
+                            </p>
+                            
+                            <div className="flex gap-4 justify-center">
+                                <a href="#projects" className="bg-cyan-500 text-black font-display font-bold px-8 py-4 text-xs tracking-widest hover:bg-white transition-all uppercase">Explore Lab</a>
                             </div>
                         </div>
+                    </section>
 
-                        <nav className="flex-1 p-4 space-y-2">
-                            {[
-                                {id: 'lunar_link', label: 'LUNAR_ARRAY', icon: Moon},
-                                {id: 'telescope', label: 'DEEP_SKY', icon: Telescope},
-                                {id: 'system', label: 'HEALTH', icon: Activity}
-                            ].map(btn => (
-                                <button 
-                                    key={btn.id}
-                                    onClick={() => setActiveTab(btn.id)}
-                                    className={`flex items-center gap-3 w-full p-3 rounded text-xs font-tech tracking-tighter transition-all ${activeTab === btn.id ? 'bg-blue-900/20 text-blue-400 border border-blue-500/30' : 'hover:bg-white/5'}`}
+                    {/* Project Section */}
+                    <section id="projects" className="py-24 bg-[#080808] border-t border-white/5">
+                        <div className="container mx-auto px-6">
+                            <h3 className="font-display text-2xl mb-12 flex items-center gap-4">
+                                <Terminal className="text-cyan-500" /> ACTIVE_MODULES
+                            </h3>
+                            
+                            <div className="grid md:grid-cols-3 gap-8">
+                                <div className="p-8 border border-white/5 bg-black hover:border-cyan-500/50 transition-all group opacity-50">
+                                    <div className="text-xs font-tech text-gray-600 mb-4">PROJECT_01</div>
+                                    <h4 className="font-display text-lg mb-2 text-gray-400 italic">ORBITAL_SIM (ARCHIVED)</h4>
+                                </div>
+                                <div className="p-8 border border-white/5 bg-black hover:border-cyan-500/50 transition-all group opacity-50">
+                                    <div className="text-xs font-tech text-gray-600 mb-4">PROJECT_02</div>
+                                    <h4 className="font-display text-lg mb-2 text-gray-400 italic">AVIONICS_CORE (ARCHIVED)</h4>
+                                </div>
+                                
+                                {/* TRIGGER PROJECT 3 */}
+                                <div 
+                                    onClick={() => setIsBooting(true)}
+                                    className="p-8 border border-cyan-500/30 bg-black hover:border-cyan-400 transition-all group cursor-pointer relative overflow-hidden"
                                 >
-                                    <btn.icon size={16} /> {btn.label}
-                                </button>
-                            ))}
-                        </nav>
-
-                        <div className="p-4">
-                            <button 
-                                onClick={toggleConnection}
-                                className={`w-full py-3 rounded text-[10px] font-tech font-bold transition-all ${isConnected ? 'bg-red-900/20 text-red-500 border border-red-500/20' : 'bg-blue-600 text-white'}`}
-                            >
-                                {isConnected ? 'DISCONNECT' : 'INITIALIZE_UPLINK'}
-                            </button>
-                        </div>
-                    </aside>
-
-                    {/* Main Workspace */}
-                    <main className="flex-1 flex flex-col bg-black relative">
-                        <header className="p-4 border-b border-white/5 flex justify-between items-center text-[10px] font-tech">
-                            <div className="flex items-center gap-2">
-                                <div className={`w-2 h-2 rounded-full ${isConnected ? 'bg-green-500 animate-pulse' : 'bg-red-500'}`}></div>
-                                <span className="text-white uppercase">STATUS: {isConnected ? 'LINK_ACTIVE' : 'OFFLINE'}</span>
+                                    <div className="absolute top-0 right-0 bg-cyan-500 text-black font-tech text-[10px] px-2 py-1">LIVE_UPLINK</div>
+                                    <div className="text-xs font-tech text-cyan-500 mb-4 tracking-widest">PROJECT_03</div>
+                                    <h4 className="font-display text-xl mb-4 group-hover:text-cyan-400 transition-all">MAA_OPS TERMINAL</h4>
+                                    <p className="text-sm text-gray-500 font-tech leading-relaxed mb-6">Access deep-space network scans and real-time lunar telemetry interface.</p>
+                                    <div className="flex items-center text-cyan-500 font-tech text-xs gap-2">
+                                        INITIALIZE CONNECTION <ChevronRight size={14} className="group-hover:translate-x-2 transition-transform"/>
+                                    </div>
+                                </div>
                             </div>
-                            <span className="text-slate-600 uppercase">SYS_TIME: {new Date().toLocaleTimeString()}</span>
-                        </header>
-
-                        <div className="flex-1 p-6 overflow-y-auto">
-                            {activeTab === 'lunar_link' && (
-                                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 fade-in">
-                                    <div className="bg-[#0a0a0c] border border-white/10 p-2 relative aspect-square md:aspect-video flex items-center justify-center overflow-hidden">
-                                        <div className="scanner-line"></div>
-                                        {!isConnected ? (
-                                            <p className="text-slate-700 font-tech text-xs">AWAITING_SIGNAL_LOCK...</p>
-                                        ) : (
-                                            <div className="text-center">
-                                                <Moon size={120} className="text-white opacity-20 mb-4 mx-auto" strokeWidth={1}/>
-                                                <p className="font-tech text-xs text-blue-400 uppercase tracking-widest">{moonData.name}</p>
-                                            </div>
-                                        )}
-                                        <Crosshair className="absolute text-white/5 w-full h-full p-10 pointer-events-none" />
-                                    </div>
-
-                                    <div className="space-y-4">
-                                        <div className="bg-[#0a0a0c] border border-white/10 p-5 rounded-sm">
-                                            <h3 className="text-xs font-tech text-slate-500 mb-4 border-b border-white/5 pb-2">LUNAR TELEMETRY</h3>
-                                            <div className="grid grid-cols-2 gap-4">
-                                                <div>
-                                                    <p className="text-[9px] text-blue-500 font-tech uppercase">Illumination</p>
-                                                    <p className="text-3xl text-white font-ui">{isConnected ? moonData.illumination.toFixed(1) : '0.0'}%</p>
-                                                </div>
-                                                <div>
-                                                    <p className="text-[9px] text-blue-500 font-tech uppercase">Distance</p>
-                                                    <p className="text-3xl text-white font-ui">{isConnected ? Math.round(moonData.distance).toLocaleString() : '---'}</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        
-                                        <div className="bg-black border border-white/10 p-4 h-48 font-tech text-[10px] overflow-y-auto scrollbar-hide">
-                                            <p className="text-green-500 border-b border-green-950 mb-2">LIVE_LOG_STREAM</p>
-                                            {logs.map((log, i) => <div key={i} className="mb-1 opacity-70">{log}</div>)}
-                                        </div>
-                                    </div>
-                                </div>
-                            )}
-
-                            {activeTab === 'telescope' && (
-                                <div className="h-full flex flex-col fade-in">
-                                    {!isConnected ? (
-                                        <div className="flex-1 border border-dashed border-white/10 rounded flex flex-col items-center justify-center opacity-30">
-                                            <Telescope size={40} className="mb-4" />
-                                            <p className="text-xs font-tech">AUTHORIZATION_REQUIRED</p>
-                                        </div>
-                                    ) : (
-                                        <div className="flex-1 flex flex-col gap-4">
-                                            <div className="flex-1 bg-[#050508] border border-white/10 relative overflow-hidden flex items-center justify-center">
-                                                {isScanning ? (
-                                                    <div className="text-center">
-                                                        <Search className="animate-ping text-blue-500 mb-4 mx-auto" />
-                                                        <div className="w-48 h-1 bg-slate-900 rounded-full overflow-hidden">
-                                                            <div className="h-full bg-blue-500" style={{width: `${scanProgress}%`}}></div>
-                                                        </div>
-                                                    </div>
-                                                ) : currentFeed ? (
-                                                    <img src={currentFeed.url} className="w-full h-full object-cover grayscale contrast-125 opacity-60" />
-                                                ) : (
-                                                    <button onClick={findWorkingFeed} className="bg-blue-600 px-6 py-2 text-white font-tech text-xs">INITIATE_SCAN</button>
-                                                )}
-                                            </div>
-                                        </div>
-                                    )}
-                                </div>
-                            )}
                         </div>
-                    </main>
+                    </section>
                 </div>
             );
+
+            // --- Handshake / Boot View ---
+            const BootScreen = () => {
+                useEffect(() => {
+                    const timer = setTimeout(() => { setView('dashboard'); setIsBooting(false); }, 3000);
+                    return () => clearTimeout(timer);
+                }, []);
+
+                return (
+                    <div className="h-screen bg-black flex flex-col items-center justify-center font-tech p-6">
+                        <div className="w-full max-w-sm border border-cyan-900/30 p-8 bg-cyan-950/5 relative">
+                            <div className="scanline-ui"></div>
+                            <Shield className="text-cyan-500 animate-pulse mx-auto mb-6" size={48} />
+                            <div className="space-y-2 text-xs">
+                                <p className="text-cyan-800">> ESTABLISHING SECURE TUNNEL...</p>
+                                <p className="text-cyan-800">> AUTHENTICATING SOLO_OPERATOR...</p>
+                                <p className="text-cyan-400">> ACCESS_GRANTED</p>
+                                <p className="text-cyan-800">> SYNCING DSN NODES...</p>
+                                <div className="w-full h-1 bg-cyan-950 mt-4">
+                                    <div className="h-full bg-cyan-500 animate-[load_3s_ease-in-out]"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <style>{` @keyframes load { 0% { width: 0% } 100% { width: 100% } } `}</style>
+                    </div>
+                );
+            };
+
+            // --- Your Dashboard (Project 3) ---
+            const DashboardView = () => {
+                useEffect(() => {
+                    const calcMoon = () => {
+                        const synodic = 29.53;
+                        const diff = (new Date().getTime() - new Date('2000-01-06').getTime()) / (86400000);
+                        const cycle = (diff / synodic) % 1;
+                        setMoonData({
+                            phase: cycle,
+                            illumination: (1 - Math.abs(cycle - 0.5) * 2) * 100,
+                            distance: 384400 + (Math.sin(cycle * Math.PI * 2) * 21000),
+                            name: cycle < 0.5 ? 'Waxing Phase' : 'Waning Phase'
+                        });
+                    };
+                    calcMoon();
+                }, []);
+
+                return (
+                    <div className="flex h-screen bg-[#010102] text-slate-300 font-ui overflow-hidden fade-enter-active">
+                        {/* Sidebar */}
+                        <aside className="w-20 md:w-64 border-r border-white/5 bg-[#050508] flex flex-col z-50">
+                            <div className="p-6 border-b border-white/5 flex items-center gap-3">
+                                <Radar className="text-cyan-500" size={20} />
+                                <div className="hidden md:block">
+                                    <h1 className="font-bold text-white text-sm tracking-widest">MAA_OPS</h1>
+                                    <p className="text-[9px] text-slate-600 font-tech">STATION_NODE: 03</p>
+                                </div>
+                            </div>
+                            <nav className="flex-1 p-4 space-y-2">
+                                <button onClick={() => setActiveTab('lunar_link')} className={`w-full p-3 flex items-center gap-3 rounded text-xs font-tech ${activeTab === 'lunar_link' ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20' : ''}`}>
+                                    <Moon size={16}/> <span className="hidden md:block">LUNAR_ARRAY</span>
+                                </button>
+                                <button onClick={() => setActiveTab('telescope')} className={`w-full p-3 flex items-center gap-3 rounded text-xs font-tech ${activeTab === 'telescope' ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20' : ''}`}>
+                                    <Telescope size={16}/> <span className="hidden md:block">DSN_SCANNER</span>
+                                </button>
+                                <button onClick={() => setView('landing')} className="w-full p-3 flex items-center gap-3 rounded text-xs font-tech text-red-900 hover:text-red-500 mt-auto">
+                                    <Power size={16}/> <span className="hidden md:block">TERMINATE</span>
+                                </button>
+                            </nav>
+                        </aside>
+
+                        {/* Main Work Area */}
+                        <main className="flex-1 flex flex-col">
+                            <header className="p-4 border-b border-white/5 bg-black/40 flex justify-between items-center text-[10px] font-tech">
+                                <div className="flex items-center gap-4">
+                                    <div className="flex items-center gap-2">
+                                        <div className={`w-2 h-2 rounded-full ${isConnected ? 'bg-green-500 animate-pulse' : 'bg-red-600'}`}></div>
+                                        <span>LINK: {isConnected ? 'SECURE' : 'OFFLINE'}</span>
+                                    </div>
+                                    <button onClick={() => {setIsConnected(!isConnected); setLogs([`> LINK_CHANGED: ${!isConnected}`, ...logs])}} className="text-cyan-500 hover:underline">[{isConnected ? 'STOP' : 'START'}]</button>
+                                </div>
+                                <div>UPLINK_COORD: 21.92°N, 96.08°E</div>
+                            </header>
+
+                            <div className="flex-1 p-6 overflow-y-auto bg-[radial-gradient(circle_at_top,#0a0a0c_0%,#000_100%)]">
+                                {activeTab === 'lunar_link' ? (
+                                    <div className="grid lg:grid-cols-2 gap-8 h-full">
+                                        <div className="bg-black border border-white/10 relative p-4 flex flex-col items-center justify-center">
+                                            <div className="scanline-ui opacity-20"></div>
+                                            <div className="relative">
+                                                <Moon size={180} className={`opacity-20 transition-all duration-1000 ${isConnected ? 'text-white' : 'text-slate-800'}`} strokeWidth={1} />
+                                                <Crosshair className="absolute inset-0 text-cyan-500/20 w-full h-full p-12" />
+                                            </div>
+                                            <div className="mt-8 text-center font-tech">
+                                                <p className="text-xs text-cyan-500 mb-1">TARGET_LUNA</p>
+                                                <h2 className="text-xl text-white tracking-[0.3em]">{moonData.name}</h2>
+                                            </div>
+                                        </div>
+                                        <div className="space-y-6">
+                                            <div className="bg-[#0a0a0c] border border-white/10 p-6">
+                                                <h3 className="font-tech text-xs text-slate-500 mb-6">TELEMETRY_PACKET</h3>
+                                                <div className="space-y-6">
+                                                    <div>
+                                                        <span className="block text-[10px] text-cyan-900 mb-1">ILLUMINATION</span>
+                                                        <span className="text-4xl font-display text-white">{isConnected ? moonData.illumination.toFixed(2) : '00.00'}%</span>
+                                                    </div>
+                                                    <div>
+                                                        <span className="block text-[10px] text-cyan-900 mb-1">DISTANCE_KM</span>
+                                                        <span className="text-3xl font-display text-white">{isConnected ? Math.round(moonData.distance).toLocaleString() : '---,---'}</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div className="bg-black border border-white/10 p-4 h-48 overflow-y-auto font-tech text-[10px] text-cyan-700 scrollbar-hide">
+                                                <p className="border-b border-cyan-900/30 mb-2 pb-1 text-cyan-500">REALTIME_LOG_FEED</p>
+                                                {logs.map((l, i) => <div key={i} className="mb-1 opacity-60 italic">{l}</div>)}
+                                            </div>
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <div className="h-full flex flex-col items-center justify-center border border-dashed border-white/10 opacity-50">
+                                        <Telescope size={48} className="mb-4 text-cyan-900"/>
+                                        <p className="font-tech text-xs">DEEP_SKY_SCANNER_READY</p>
+                                        <button className="mt-4 px-6 py-2 bg-cyan-500/10 border border-cyan-500 text-cyan-500 font-tech text-[10px] hover:bg-cyan-500 hover:text-black transition-all">START_FREQUENCY_SWEEP</button>
+                                    </div>
+                                )}
+                            </div>
+                        </main>
+                    </div>
+                );
+            };
+
+            if (isBooting) return <BootScreen />;
+            return view === 'landing' ? <LandingPage /> : <DashboardView />;
         };
 
-        // Render the app
         const root = ReactDOM.createRoot(document.getElementById('root'));
         root.render(<App />);
 
