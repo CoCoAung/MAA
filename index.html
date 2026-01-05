@@ -1,202 +1,254 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MAA_OPS | Solo Aerospace Command</title>
+    <title>Myanmar Aerospace | Engineering & Space</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap">
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Share+Tech+Mono&family=Rajdhani:wght@500;700&display=swap');
-        
-        body { background-color: #050505; color: #e5e5e5; font-family: 'Rajdhani', sans-serif; overflow-x: hidden; margin: 0; }
-        .font-tech { font-family: 'Share Tech Mono', monospace; }
-        .font-display { font-family: 'Orbitron', sans-serif; }
-        
-        /* CRT Effect */
-        .crt::after {
-            content: " "; display: block; position: fixed; top: 0; left: 0; bottom: 0; right: 0;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
-            z-index: 999; pointer-events: none; background-size: 100% 3px, 3px 100%; opacity: 0.2;
+        body {
+            font-family: 'Inter', sans-serif;
+            scroll-behavior: smooth;
         }
 
-        .hidden { display: none !important; }
-        .hero-glow { text-shadow: 0 0 20px rgba(6, 182, 212, 0.5); }
-        
-        @keyframes scanline { 0% { top: 0%; } 100% { top: 100%; } }
-        .scanline {
-            position: absolute; width: 100%; height: 2px; background: #06b6d4;
-            box-shadow: 0 0 10px #06b6d4; animation: scanline 4s linear infinite; opacity: 0.3;
+        /* Parallax Hero Background */
+        .hero-bg {
+            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.7)), 
+                        url('https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?q=80&w=2072&auto=format&fit=crop');
+            background-attachment: fixed;
+            background-position: center;
+            background-size: cover;
         }
 
-        .project-card:hover { border-color: #06b6d4; transform: translateY(-5px); }
+        /* Glassmorphism for Cards */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #3b82f6;
+            border-radius: 5px;
+        }
     </style>
 </head>
-<body class="crt">
 
-    <div id="landing-page">
-        <nav class="p-6 flex justify-between items-center border-b border-white/5 bg-black/50 sticky top-0 z-50">
-            <div class="flex items-center gap-3">
-                <i data-lucide="rocket" class="text-cyan-400"></i>
-                <span class="font-display font-bold tracking-tighter text-xl">PROJECT_HORIZON</span>
+<body class="bg-slate-900 text-slate-100 antialiased">
+
+    <nav class="fixed w-full z-50 transition-all duration-300" id="navbar">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="#" class="text-2xl font-bold tracking-tighter flex items-center gap-2">
+                <i class="fa-solid fa-shuttle-space text-blue-500"></i>
+                <span>MAEU<span class="text-blue-500">.EDU</span></span>
+            </a>
+
+            <div class="hidden md:flex space-x-8 font-medium">
+                <a href="#home" class="hover:text-blue-400 transition">Home</a>
+                <a href="#about" class="hover:text-blue-400 transition">University</a>
+                <a href="#departments" class="hover:text-blue-400 transition">Departments</a>
+                <a href="#satellites" class="hover:text-blue-400 transition">Missions</a>
             </div>
-            <div class="font-tech text-xs text-cyan-500 animate-pulse">NODE_3 // MEIKTILA</div>
-        </nav>
 
-        <section class="min-h-[80vh] flex flex-col justify-center items-center px-6 text-center">
-            <h2 class="font-tech text-cyan-500 tracking-[0.4em] mb-4 text-sm uppercase">Independent Space Command</h2>
-            <h1 class="text-5xl md:text-7xl font-display font-black mb-8 hero-glow">THE SOLO<br/><span class="text-cyan-400">FRONTIER</span></h1>
-            <p class="max-w-xl mx-auto text-gray-400 font-tech text-sm mb-12">Building the infrastructure for private space telemetry and orbital simulation. Built entirely by one engineer.</p>
-            <a href="#projects" class="border border-cyan-500 text-cyan-500 font-display px-8 py-4 text-xs tracking-widest hover:bg-cyan-500 hover:text-black transition-all">ACCESS LAB</a>
-        </section>
+            <button class="md:hidden text-2xl focus:outline-none" onclick="toggleMenu()">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
 
-        <section id="projects" class="py-20 bg-[#080808] border-t border-white/5 px-6">
-            <div class="max-w-6xl mx-auto">
-                <h3 class="font-display text-xl mb-12 flex items-center gap-4 uppercase"><i data-lucide="terminal" class="text-cyan-500"></i> Active_Modules</h3>
-                <div class="grid md:grid-cols-3 gap-8">
-                    <div class="p-8 border border-white/10 bg-black opacity-40 cursor-not-allowed">
-                        <span class="font-tech text-[10px] text-gray-600">PROJECT_01</span>
-                        <h4 class="font-display text-lg mt-2 italic">ORBIT_SIM</h4>
-                    </div>
-                    <div class="p-8 border border-white/10 bg-black opacity-40 cursor-not-allowed">
-                        <span class="font-tech text-[10px] text-gray-600">PROJECT_02</span>
-                        <h4 class="font-display text-lg mt-2 italic">AVIONICS_C</h4>
-                    </div>
-                    <div onclick="startBoot()" class="project-card p-8 border border-cyan-900 bg-black cursor-pointer transition-all relative">
-                        <span class="absolute top-0 right-0 bg-cyan-600 text-black font-tech text-[9px] px-2 py-1">LIVE</span>
-                        <span class="font-tech text-[10px] text-cyan-500 uppercase tracking-widest">Project_03</span>
-                        <h4 class="font-display text-xl mt-2 mb-4">MAA_OPS DASHBOARD</h4>
-                        <p class="text-sm text-gray-500 font-tech">Satellite Downlink & Lunar Telemetry Control Center.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-    </div>
+        <div id="mobile-menu" class="hidden absolute top-full left-0 w-full bg-slate-900/95 border-b border-slate-800 p-4 md:hidden text-center flex-col space-y-4 shadow-xl">
+            <a href="#home" class="block hover:text-blue-400">Home</a>
+            <a href="#about" class="block hover:text-blue-400">University</a>
+            <a href="#departments" class="block hover:text-blue-400">Departments</a>
+            <a href="#satellites" class="block hover:text-blue-400">Missions</a>
+        </div>
+    </nav>
 
-    <div id="boot-screen" class="hidden h-screen flex flex-col items-center justify-center bg-black font-tech">
-        <div class="w-72 border border-cyan-900/50 p-6 bg-cyan-950/5 relative text-xs">
-            <div class="scanline"></div>
-            <i data-lucide="shield" class="text-cyan-500 animate-pulse mx-auto mb-4" size="32"></i>
-            <p id="boot-text" class="text-cyan-800">> INITIALIZING...</p>
-            <div class="w-full h-1 bg-cyan-900/30 mt-4">
-                <div id="boot-progress" class="h-full bg-cyan-500 w-0 transition-all duration-[3000ms]"></div>
+    <header id="home" class="hero-bg h-screen flex items-center justify-center text-center px-4 relative">
+        <div class="max-w-4xl mx-auto z-10 animate-fade-in-up">
+            <span class="uppercase tracking-widest text-blue-400 text-sm font-bold mb-4 block">Est. 2002 • Meiktila, Myanmar</span>
+            <h1 class="text-5xl md:text-7xl font-extrabold mb-6 leading-tight">
+                Advancing Myanmar's <br>
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-emerald-400">Aerospace Frontier</span>
+            </h1>
+            <p class="text-lg md:text-xl text-slate-300 mb-10 max-w-2xl mx-auto">
+                Myanmar Aerospace Engineering University (MAEU) is the nation's premier institution dedicated to propulsion, avionics, and space systems engineering.
+            </p>
+            <div class="flex flex-col md:flex-row gap-4 justify-center">
+                <a href="#satellites" class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-full font-bold transition transform hover:scale-105 shadow-lg shadow-blue-500/30">
+                    View Satellite Missions
+                </a>
+                <a href="#departments" class="border border-slate-400 hover:border-white hover:bg-white hover:text-black px-8 py-3 rounded-full font-bold transition">
+                    Academic Programs
+                </a>
             </div>
         </div>
-    </div>
+        
+        <div class="absolute bottom-10 animate-bounce">
+            <i class="fas fa-chevron-down text-2xl text-slate-500"></i>
+        </div>
+    </header>
 
-    <div id="dashboard" class="hidden h-screen flex flex-col md:flex-row bg-[#010102] overflow-hidden">
-        <aside class="w-full md:w-64 border-r border-white/5 bg-[#050508] p-6 flex flex-col">
-            <div class="flex items-center gap-3 mb-10">
-                <i data-lucide="radar" class="text-cyan-500"></i>
-                <div>
-                    <h1 class="font-bold text-white text-sm">MAA_OPS</h1>
-                    <p class="text-[9px] text-slate-600 font-tech">STATION_NODE: 03</p>
-                </div>
+    <section id="about" class="py-20 bg-slate-900">
+        <div class="container mx-auto px-6 grid md:grid-cols-2 gap-12 items-center">
+            <div class="relative">
+                <div class="absolute -inset-4 bg-blue-600/20 rounded-xl blur-lg"></div>
+                
+                <img src="https://images.unsplash.com/photo-1562774053-701939374585?q=80&w=1000&auto=format&fit=crop" 
+                     alt="University Campus" class="relative rounded-xl shadow-2xl border border-slate-700 grayscale hover:grayscale-0 transition duration-700">
             </div>
-            <nav class="space-y-4 flex-1">
-                <button class="w-full flex items-center gap-3 p-3 text-xs font-tech bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">
-                    <i data-lucide="moon" size="16"></i> LUNAR_ARRAY
-                </button>
-            </nav>
-            <button onclick="window.location.reload()" class="flex items-center gap-2 text-xs font-tech text-red-900 hover:text-red-500 transition-colors">
-                <i data-lucide="power" size="14"></i> TERMINATE_LINK
-            </button>
-        </aside>
-
-        <main class="flex-1 flex flex-col overflow-hidden">
-            <header class="p-4 border-b border-white/5 bg-black/40 flex justify-between items-center text-[10px] font-tech">
-                <div class="flex items-center gap-4">
-                    <div class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
-                    <span class="text-cyan-500">UPLINK: ACTIVE</span>
-                </div>
-                <div class="text-slate-600" id="current-time">00:00:00</div>
-            </header>
-
-            <div class="flex-1 p-6 grid lg:grid-cols-2 gap-8 overflow-y-auto">
-                <div class="bg-black border border-white/10 p-4 flex flex-col items-center justify-center relative min-h-[300px]">
-                    <div class="scanline"></div>
-                    <i data-lucide="moon" class="text-white opacity-10 absolute" size="180"></i>
-                    <i data-lucide="crosshair" class="text-cyan-500 opacity-20 absolute" size="240"></i>
-                    <div class="z-10 text-center font-tech">
-                        <p class="text-[10px] text-cyan-500 tracking-[0.5em] mb-2 uppercase">Target_Luna</p>
-                        <h2 class="text-3xl text-white font-display tracking-widest">WAXING_PHASE</h2>
+            <div>
+                <h2 class="text-3xl font-bold mb-6 flex items-center gap-3">
+                    <span class="bg-blue-600 w-2 h-8 rounded-full"></span>
+                    About MAEU
+                </h2>
+                <p class="text-slate-400 text-lg leading-relaxed mb-6">
+                    Located in <strong>Meiktila</strong>, the Myanmar Aerospace Engineering University (MAEU) was founded in 2002. It serves as the primary hub for cultivating specialized human resources in the field of aerospace technology.
+                </p>
+                <p class="text-slate-400 text-lg leading-relaxed mb-8">
+                    MAEU offers undergraduate and graduate programs designed to equip students with technical expertise in aircraft design, satellite systems, and propulsion technologies, fostering the next generation of Myanmar's engineers.
+                </p>
+                
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="bg-slate-800 p-4 rounded-lg border border-slate-700">
+                        <h4 class="text-2xl font-bold text-white">2002</h4>
+                        <p class="text-sm text-slate-400">Founded</p>
                     </div>
-                </div>
-
-                <div class="space-y-6">
-                    <div class="bg-[#0a0a0c] border border-white/10 p-6">
-                        <h3 class="font-tech text-xs text-slate-500 mb-6 uppercase tracking-widest">Telemetry_Packet</h3>
-                        <div class="space-y-6">
-                            <div>
-                                <span class="block text-[10px] text-cyan-900 mb-1 font-tech">ILLUMINATION</span>
-                                <span class="text-4xl font-display text-white">94.12%</span>
-                            </div>
-                            <div>
-                                <span class="block text-[10px] text-cyan-900 mb-1 font-tech">ORBITAL_DIST_KM</span>
-                                <span class="text-3xl font-display text-white">384,402</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="bg-black border border-white/10 p-4 h-48 overflow-y-auto font-tech text-[10px] text-cyan-800">
-                        <p class="text-cyan-500 border-b border-cyan-900/30 mb-2 pb-1">COMMS_LOG_FEED</p>
-                        <div id="log-box">
-                            <p class="mb-1">> INITIALIZING_LINK...</p>
-                            <p class="mb-1">> SYNCING_NODE_03...</p>
-                            <p class="mb-1">> DATA_STREAM_ESTABLISHED</p>
-                        </div>
+                    <div class="bg-slate-800 p-4 rounded-lg border border-slate-700">
+                        <h4 class="text-2xl font-bold text-white">6+</h4>
+                        <p class="text-sm text-slate-400">Specializations</p>
                     </div>
                 </div>
             </div>
-        </main>
-    </div>
+        </div>
+    </section>
+
+    <section id="departments" class="py-20 bg-slate-950">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">Engineering Faculties</h2>
+                <p class="text-slate-400">Specialized departments driving technical innovation.</p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="glass-card p-8 rounded-2xl hover:-translate-y-2 transition duration-300 group">
+                    <div class="w-12 h-12 bg-blue-900/50 rounded-lg flex items-center justify-center mb-6 text-blue-400 group-hover:bg-blue-600 group-hover:text-white transition">
+                        <i class="fas fa-plane-up text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Propulsion & Flight Vehicles</h3>
+                    <p class="text-slate-400 text-sm">Focusing on aerodynamics, airframe structures, and jet propulsion engines.</p>
+                </div>
+
+                <div class="glass-card p-8 rounded-2xl hover:-translate-y-2 transition duration-300 group">
+                    <div class="w-12 h-12 bg-purple-900/50 rounded-lg flex items-center justify-center mb-6 text-purple-400 group-hover:bg-purple-600 group-hover:text-white transition">
+                        <i class="fas fa-microchip text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Avionics & Electrical Systems</h3>
+                    <p class="text-slate-400 text-sm">Study of aircraft electronics, control systems, and instrumentation.</p>
+                </div>
+
+                <div class="glass-card p-8 rounded-2xl hover:-translate-y-2 transition duration-300 group">
+                    <div class="w-12 h-12 bg-emerald-900/50 rounded-lg flex items-center justify-center mb-6 text-emerald-400 group-hover:bg-emerald-600 group-hover:text-white transition">
+                        <i class="fas fa-satellite text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Space Systems Engineering</h3>
+                    <p class="text-slate-400 text-sm">Dedicated to satellite design, orbital mechanics, and ground station operations.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="satellites" class="py-20 bg-slate-900 relative overflow-hidden">
+        <div class="absolute top-0 right-0 w-1/2 h-full bg-blue-600/5 blur-3xl rounded-full pointer-events-none"></div>
+
+        <div class="container mx-auto px-6 relative z-10">
+            <h2 class="text-4xl font-bold mb-12 border-l-4 border-blue-500 pl-4">Our Missions</h2>
+
+            <div class="flex flex-col md:flex-row bg-slate-800 rounded-2xl overflow-hidden border border-slate-700 shadow-2xl">
+                <div class="md:w-1/2 relative h-64 md:h-auto">
+                     
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/MMSATS-1_Deployment_%28ISS064-E-45472%29.jpg/1200px-MMSATS-1_Deployment_%28ISS064-E-45472%29.jpg" 
+                         alt="MMSAT-1 Deployment" class="w-full h-full object-cover">
+                    <div class="absolute bottom-0 left-0 bg-black/60 text-white text-xs px-3 py-1">
+                        Deployment from ISS
+                    </div>
+                </div>
+                <div class="md:w-1/2 p-8 md:p-12 flex flex-col justify-center">
+                    <div class="flex items-center gap-2 mb-4">
+                        <span class="bg-green-500/20 text-green-400 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">Completed</span>
+                        <span class="text-slate-500 text-sm">2021</span>
+                    </div>
+                    <h3 class="text-3xl font-bold mb-2">MMSAT-1 (Lawkanat-1)</h3>
+                    <p class="text-blue-400 font-medium mb-6">Earth Observation Microsatellite</p>
+                    
+                    <p class="text-slate-400 mb-6 leading-relaxed">
+                        Myanmar's first microsatellite, developed in collaboration with <strong>Hokkaido University (Japan)</strong>. The 50kg class satellite was deployed from the International Space Station (ISS) Kibo module.
+                    </p>
+
+                    <ul class="space-y-3 mb-8 text-slate-300">
+                        <li class="flex items-center gap-3">
+                            <i class="fas fa-check-circle text-blue-500"></i> Agricultural Monitoring
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <i class="fas fa-check-circle text-blue-500"></i> Disaster Response
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <i class="fas fa-check-circle text-blue-500"></i> Environmental Sensing
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-black py-12 border-t border-slate-800">
+        <div class="container mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6">
+            <div class="text-center md:text-left">
+                <h4 class="text-xl font-bold text-white mb-2">MAEU</h4>
+                <p class="text-slate-500 text-sm">Myanmar Aerospace Engineering University<br>Meiktila, Mandalay Region</p>
+            </div>
+            
+            <div class="flex space-x-6">
+                <a href="#" class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center text-slate-400 hover:bg-blue-600 hover:text-white transition">
+                    <i class="fab fa-facebook-f"></i>
+                </a>
+                <a href="#" class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center text-slate-400 hover:bg-blue-600 hover:text-white transition">
+                    <i class="fas fa-envelope"></i>
+                </a>
+            </div>
+        </div>
+        <div class="text-center mt-10 text-slate-700 text-sm">
+            &copy; 2024 Myanmar Aerospace Engineering University. Educational Project.
+        </div>
+    </footer>
 
     <script>
-        // Initialize Icons
-        lucide.createIcons();
+        // Navbar Scrolled State
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                navbar.classList.add('bg-slate-900/90', 'backdrop-blur-md', 'shadow-lg');
+            } else {
+                navbar.classList.remove('bg-slate-900/90', 'backdrop-blur-md', 'shadow-lg');
+            }
+        });
 
-        // Time Update
-        setInterval(() => {
-            document.getElementById('current-time').innerText = new Date().toLocaleTimeString();
-        }, 1000);
-
-        // Navigation Logic
-        function startBoot() {
-            document.getElementById('landing-page').classList.add('hidden');
-            document.getElementById('boot-screen').classList.remove('hidden');
-            
-            const progress = document.getElementById('boot-progress');
-            const bootText = document.getElementById('boot-text');
-            
-            setTimeout(() => { progress.style.width = '100%'; }, 100);
-            
-            const lines = ["AUTHENTICATING...", "CONNECTING TO DSN...", "UPLINK_STABLE", "ACCESS_GRANTED"];
-            let i = 0;
-            const interval = setInterval(() => {
-                bootText.innerText = `> ${lines[i]}`;
-                i++;
-                if (i >= lines.length) {
-                    clearInterval(interval);
-                    setTimeout(showDashboard, 800);
-                }
-            }, 700);
-        }
-
-        function showDashboard() {
-            document.getElementById('boot-screen').classList.add('hidden');
-            document.getElementById('dashboard').classList.remove('hidden');
-            // Refresh icons inside the hidden div once revealed
-            lucide.createIcons();
-            addLogs();
-        }
-
-        function addLogs() {
-            const logBox = document.getElementById('log-box');
-            setInterval(() => {
-                const p = document.createElement('p');
-                p.className = "mb-1 opacity-60";
-                p.innerText = `> PKT_RECV: 0x${Math.random().toString(16).substr(2, 6).toUpperCase()}_STABLE`;
-                logBox.prepend(p);
-            }, 3000);
+        // Mobile Menu Toggle
+        function toggleMenu() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+            menu.classList.toggle('flex');
         }
     </script>
 </body>
